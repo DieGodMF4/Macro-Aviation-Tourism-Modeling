@@ -3,7 +3,7 @@ import glob
 import pandas as pd
 from pathlib import Path
 
-def try_read_csv(path: str, nrows: int = 2000):
+def try_read_csv(path: str, nrows: int = 12000):
     """
     Try multiple common CSV formats (Eurostat comma CSV, semicolon CSV, Polish decimal comma).
     Returns (df, meta) or (None, meta) if failed.

@@ -167,7 +167,7 @@ $$\ln(TD_{it}) = \beta_1 + \beta_2 \ln(Y_{it}) + \beta_3 \ln(P_{it}) + \beta_4 \
 
 $$P_{it} = \frac{CPI_{PL,t} \;/\; EX_{PLN/EUR,t}}{CPI_{i,t} \;/\; EX_{i/EUR,t}}$$
 
-where CPI refers to the All-items HICP, EX is the exchange rate, PL is Poland (destination), and i is the origin country.
+where CPI refers to the **All-items HICP**, EX is the exchange rate, PL is Poland (destination), and i is the origin country.
 
 **Country coverage note:** The dataset includes all required origin markets (DE, FR, ES, AT, CZ, EL, HR, IT, NL, SE, PL, UK, HU) as well as the EU aggregate, enabling full computation of the relative price variable for all origin-destination pairs. Croatia (HR) has shorter coverage (from 2023 onwards), which may limit the substitute price calculation for earlier periods.
 
@@ -227,7 +227,7 @@ where CPI refers to the All-items HICP, EX is the exchange rate, PL is Poland (d
 | **Frequency** | Annual |
 | **Period** | Year 1 to 2022 |
 | **Geography** | World regions and selected countries |
-| **Dimensions** | 2,000+ observations × 5 columns |
+| **Dimensions** | 15,000+ observations × 5 columns |
 | **Key variable** | `Gross domestic product (GDP)`: GDP in international dollars |
 | **Download date** | February 2026 |
 
@@ -273,7 +273,7 @@ where CPI refers to the All-items HICP, EX is the exchange rate, PL is Poland (d
 | **Unit** | EUR |
 | **Structure** | Net earnings |
 | **Case** | Multiple household configurations (two-earner couples, single earners, etc.) |
-| **Dimensions** | 2,000 observations × 11 columns |
+| **Dimensions** | 3,300+ observations × 11 columns |
 | **Key variable** | `OBS_VALUE`: Annual net earnings in EUR |
 | **Missing data** | `OBS_VALUE`: 0% |
 | **Download date** | February 2026 |
@@ -296,7 +296,7 @@ where CPI refers to the All-items HICP, EX is the exchange rate, PL is Poland (d
 | **Geography** | Austria, Belgium, Bulgaria, Czechia, Germany, Denmark, Estonia, Greece (+ others) |
 | **Unit** | Balance (percentage points) |
 | **Adjustment** | Seasonally adjusted, not calendar adjusted |
-| **Dimensions** | 2,000+ observations × 11 columns |
+| **Dimensions** | 5,000+ observations × 11 columns |
 | **Key variable** | `OBS_VALUE`: Consumer confidence indicator (balance) |
 | **Missing data** | `OBS_VALUE`: 0% |
 | **Download date** | February 2026 |
@@ -318,7 +318,7 @@ where CPI refers to the All-items HICP, EX is the exchange rate, PL is Poland (d
 | **URL** | https://ec.europa.eu/eurostat/databrowser/view/avia_tf_aca/default/table |
 | **Frequency** | Monthly |
 | **Period** | 2010-01 to 2025-10 |
-| **Geography** | All Polish airports (Bydgoszcz, Gdańsk, Katowice, Kraków, Łódź, Lublin, Poznań, Rzeszów, Szczecin, Warsaw Chopin, Warsaw Modlin, Wrocław) |
+| **Geography** | All Polish airports (Bydgoszcz, Gdańsk, Katowice, **Kraków**, Łódź, Lublin, Poznań, Rzeszów, Szczecin, **Warsaw Chopin**, Warsaw Modlin, Wrocław) |
 | **Transport measures** | `ST_PAS` (Passenger seats available), `PAS_BRD` (Passengers on board), `CAF_PAS` (Commercial passenger air flights) |
 | **Units** | Seats (`SEAT`), Passengers (`PAS`), Flights (`FLIGHT`) |
 | **Dimensions** | 2,000+ observations × 12 columns |
@@ -451,7 +451,7 @@ $$\ln(TD_{it}) = \beta_1 + \beta_2 \ln(Y_{it}) + \beta_3 \ln(P_{it}) + \beta_4 \
 | **Unit** | Thousand persons |
 | **Sectors** | Accommodation and food services; Accommodation; Travel agencies; Air transport; Total NACE |
 | **Breakdowns** | By sex, by full-time/part-time, by employment status |
-| **Dimensions** | 2,000 observations × 13 columns |
+| **Dimensions** | 12,000+ observations × 13 columns |
 | **Key variable** | `OBS_VALUE`: Employment in thousands |
 | **Missing data** | `OBS_VALUE`: 7.65%; `OBS_FLAG`: 64.8% present (many flags) |
 | **Download date** | February 2026 |
