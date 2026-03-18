@@ -29,25 +29,25 @@ data/
 |   |   |── prc_ppp_ind__price-level-indices.csv
 |   |   |── prc_hicp_aind__specific-inflation.csv
 |   |   |── prc_hicp_midx__relevant-countries-2003-.csv
-|   |   └── ert_bil_eur_m__exchange-rates-eur-pln-usd-2003-.csv
+|   |   |── ert_bil_eur_m__exchange-rates-eur-pln-usd-2003-.csv
 |   |── demographic/
 |   |   |── demo_pjan__population-eur-990-25.csv
 |   |   |── earn_nt_net__annual-net-earnings.csv
-|   |   └── ei_bsco_m__consumer-conf-indicator.csv
+|   |   |── ei_bsco_m__consumer-conf-indicator.csv
 |   |── transport/
 |   |   |── avia_tf_aca__seats-flights-pass-PL-2010-.csv
 |   |   |── avia_paoc__passengers-countries.csv
-|   |   └── avia_tf_apal_passengers_airports_PL-2003-.csv
-|   └── tourism/
+|   |   |── avia_tf_apal_passengers_airports_PL-2003-.csv
+|   |── tourism/
 |       |── tour_occ_nights_accommodation_PL_2003-.csv
 |       |── tour_cap_nat__tourism-infraestructure.csv
 |       |── tour_lfsq6r2__employment-tourism-industries.csv
 |       |── UN_Tourism_inbound_arrivals_by_region_12_2025.xlsx
-|       └── UN_Tourism_inbound_expenditure_12_2025.xlsx
+|       |── UN_Tourism_inbound_expenditure_12_2025.xlsx
 |── processed/
-|   └── master_panel_monthly.csv
+|   |── master_panel_monthly.csv
 |── scenarios/
-└── README.md
+|── README.md
 ```
 
 ---
