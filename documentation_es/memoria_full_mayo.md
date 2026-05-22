@@ -38,8 +38,9 @@ This Bachelor's Thesis models and predicts international tourism demand in Polan
 
 El turismo internacional constituye uno de los sectores económicos más relevantes a escala global. Según el Barómetro Mundial del Turismo de la Organización Mundial del Turismo de Naciones Unidas, las llegadas internacionales alcanzaron los 1.400 millones en 2024, recuperando de forma prácticamente completa los niveles previos a la pandemia de COVID-19. El Consejo Mundial de Viajes y Turismo estimó que la contribución total del sector al Producto Interior Bruto mundial fue de 10,9 billones de dólares en 2024 — en torno al 10 % de la economía global — sosteniendo 357 millones de empleos directos e indirectos. En el ámbito europeo, el turismo aportó cerca de 1,8 billones de euros al PIB de la Unión Europea, consolidándose como uno de los motores estructurales del continente.
 
-> **[ILUSTRACIÓN 1.1 AQUÍ — Contribución del sector turístico al PIB por país europeo]**
-> *Gráfico de barras horizontales que compara la contribución porcentual del turismo al PIB en una selección representativa de países europeos. Se destaca Polonia (≈4 %) frente a la media de la UE (≈10 %), y se contrastan economías muy dependientes del turismo (Croacia ≈26 %, Portugal ≈20 %, Grecia ≈19 %, España ≈14 %) con economías de menor peso relativo (Alemania ≈8 %, Países Bajos ≈7 %). Fuente: WTTC 2025.*
+![ILUSTRACIÓN 1.1 — Contribución del sector turístico al PIB por país europeo](../documentation_es/figures-memoria/fig_1_1_tourism_gdp_share.png)
+
+
 
 La heterogeneidad que muestra la Ilustración 1.1 refleja la diversidad estructural del turismo europeo: conviven economías intensivas en turismo — donde el sector supera el 20 % del PIB — con economías emergentes en las que el turismo representa todavía una fracción moderada de la actividad agregada. Polonia se inscribe en este segundo grupo, con un margen de crecimiento aún considerable que la hace especialmente interesante desde la perspectiva de la predicción y la planificación estratégica.
 
@@ -51,16 +52,19 @@ La literatura económica sitúa al turismo internacional como un bien de lujo: e
 
 Esta volatilidad quedó dramáticamente expuesta durante la pandemia de COVID-19, el mayor colapso conocido en la historia moderna del turismo internacional. Según Eurostat, las pernoctaciones de turistas extranjeros en la Unión Europea se desplomaron alrededor de un 85 % en abril de 2020 respecto al mismo mes del año anterior, y la serie tardó aproximadamente 28 meses en recuperar los niveles previos. Este episodio reforzó la necesidad de herramientas predictivas robustas, capaces de integrar no solo la dinámica temporal endógena del sector sino también los determinantes macroeconómicos, demográficos y de conectividad que condicionan los flujos turísticos.
 
+# CAMBIO 2.
+
 ## 1.3. Polonia como caso de estudio
 
-Este trabajo toma como caso de estudio el turismo internacional en Polonia, una elección que responde a varios factores convergentes. Desde su adhesión a la Unión Europea el 1 de mayo de 2004, Polonia ha experimentado una transformación demográfica, económica y estructural sin precedentes en la Europa reciente. Su PIB real se ha más que duplicado en el período 2004–2024 y su nivel de precios, medido por el Índice de Precios al Consumo Armonizado, permanece aproximadamente un 30 % por debajo de la media comunitaria, manteniendo una ventaja competitiva considerable en paridad de poder adquisitivo.
+Este trabajo toma como caso de estudio el turismo internacional en Polonia, una elección que responde a varios factores convergentes. Desde su adhesión a la Unión Europea el 1 de mayo de 2004, Polonia ha experimentado una transformación económica y estructural sin precedentes en la Europa reciente. Su PIB real per cápita, medido en volúmenes encadenados con referencia 2010, se duplicó holgadamente en el período 2004–2024, pasando de aproximadamente 7.300 EUR a 15.750 EUR por habitante (un crecimiento de un factor 2,16). Su nivel de precios, medido por el Índice de Precios al Consumo Armonizado, permanece notablemente por debajo de la media comunitaria, manteniendo una ventaja competitiva considerable en paridad de poder adquisitivo de cara a los visitantes extranjeros.
 
-> **[ILUSTRACIÓN 1.2 AQUÍ — Evolución conjunta de pasajeros aéreos y PIB per cápita de Polonia, 2004-2024]**
-> *Gráfico de doble eje. Eje izquierdo: pasajeros en aeropuertos polacos (millones). Eje derecho: PIB per cápita de Polonia como porcentaje de la media UE-27. Muestra la convergencia paralela del crecimiento económico y la conectividad aérea desde la adhesión a la UE, el colapso de 2020 y la recuperación diferenciada. Fuente: Eurostat.*
+> ![ILUSTRACIÓN 1.2: Crecimiento paralelo de la conectividad aérea y del PIB real per cápita de Polonia, 2004–2024](../documentation_es/figures-memoria/fig_1_2_pax_gdp_poland.png)
 
-La Ilustración 1.2 sintetiza la narrativa macroeconómica central del trabajo: el crecimiento sostenido del PIB per cápita polaco —que pasó de aproximadamente el 50 % de la media europea en 2004 al 80 % en 2024— ha ido acompañado de una expansión del tráfico aéreo que ha multiplicado por cinco el número de pasajeros en el mismo período. Esta expansión ha sido impulsada en gran medida por la penetración masiva de las aerolíneas de bajo coste, particularmente Ryanair y Wizz Air, que han transformado la estructura del mercado aéreo polaco abriendo rutas directas con prácticamente todos los grandes mercados emisores de Europa Occidental.
+La Ilustración 1.2 sintetiza la narrativa macroeconómica central del trabajo: la transformación económica de Polonia ha ido acompañada de una expansión espectacular de la conectividad aérea. En el mismo período en que su PIB real per cápita se duplicaba, el número de pasajeros en aeropuertos polacos pasó de 6,1 millones en 2004 a 58,9 millones en 2024, un crecimiento de prácticamente un factor diez. Ambas curvas crecen de forma paralela y se ven afectadas simultáneamente por el shock de la pandemia en 2020, lo que sugiere una vinculación estructural entre el desempeño macroeconómico y la dinámica de la conectividad aérea que el trabajo se propone modelizar formalmente. Esta expansión ha sido impulsada en gran medida por la penetración masiva de las aerolíneas de bajo coste, particularmente Ryanair y Wizz Air, que han transformado la estructura del mercado aéreo polaco abriendo rutas directas con prácticamente todos los grandes mercados emisores de Europa Occidental.
 
 En 2024, Polonia registró la segunda tasa de crecimiento turístico más alta de toda la Unión Europea —solo superada por Malta— con un incremento interanual cercano al 6 % en pernoctaciones internacionales. La combinación de dinamismo económico, competitividad en precios, expansión de la conectividad aérea y crecimiento turístico sostenido convierte a Polonia en un laboratorio idóneo para el análisis cuantitativo de la interacción entre variables macroeconómicas, conectividad aérea y demanda turística.
+
+# CAMBIO 2.
 
 ## 1.4. Objetivo general y orientación dual del trabajo
 
@@ -99,8 +103,7 @@ El cuarto bloque, menos frecuente en la literatura clásica pero central en el p
 
 El crecimiento turístico polaco no puede desligarse de la transformación estructural de su mercado aéreo, dominado progresivamente por las aerolíneas de bajo coste (*Low-Cost Carriers*, LCC). Estas pasaron de representar menos del 5 % del mercado polaco en 2004 a más del 52 % en 2015 (Huderek-Glapska y Nowak, 2016), y han seguido ganando cuota hasta superar el 59 % en 2023. Este fenómeno resulta de la combinación de una demanda latente considerable en las diásporas polacas en Europa Occidental —particularmente en el Reino Unido, Alemania y los Países Bajos tras las grandes olas migratorias posteriores a 2004— y de una estrategia agresiva de expansión por parte de Ryanair y Wizz Air, que establecieron bases operativas en Varsovia, Cracovia, Gdańsk y Katowice.
 
-> **[ILUSTRACIÓN 2.1 AQUÍ — Tráfico aéreo en Polonia y penetración de LCC, y composición por mercado emisor]**
-> *Dos paneles. Panel izquierdo: evolución del total de pasajeros en aeropuertos polacos 2004-2024, destacando con color la cuota creciente de LCC. Panel derecho: cuota de mercado por país emisor de los nueve mercados del panel (ES 19,8 %, DE 19,5 %, UK 18,8 %, FR 14,4 %, IT 13,5 %, NL 6,6 %, SE 3,2 %, AT 2,9 %, CZ 1,4 %). Fuente: Eurostat avia_paoc.*
+![ILUSTRACIÓN 2.1 AQUÍ — Tráfico aéreo en Polonia y penetración de LCC, y composición por mercado emisor](../documentation_es/figures-memoria/fig_2_1_origin_country_traffic.png)
 
 ### 2.1.3. Pernoctaciones de turistas extranjeros como variable objetivo
 
@@ -658,10 +661,6 @@ Crouch, G. I. (1995). A meta-analysis of tourism demand. *Annals of Tourism Rese
 
 Diebold, F. X. y Mariano, R. S. (1995). Comparing predictive accuracy. *Journal of Business & Economic Statistics*, 13(3), 253–263.
 
-Eurostat (2018). *Handbook on prices and volume measures in national accounts*. Publications Office of the European Union.
-
-Eurostat (2024). Household consumption: price levels in 2023. *Eurostat News Release*.
-
 Gunter, U. y Smeral, E. (2016). The decline of tourism income elasticities in a global context. *Tourism Economics*, 22(3), 466–483.
 
 Harvey, D., Leybourne, S. y Newbold, P. (1997). Testing the equality of prediction mean squared errors. *International Journal of Forecasting*, 13(2), 281–291.
@@ -698,12 +697,50 @@ Song, H., Qiu, R. T. R. y Park, J. (2019). A review of research on tourism deman
 
 Song, H., Witt, S. F. y Li, G. (2009). *The Advanced Econometrics of Tourism Demand*. Routledge.
 
-UN Tourism (2025). *World Tourism Barometer*, vol. 23, January 2025.
-
 Wooldridge, J. M. (2010). *Econometric Analysis of Cross Section and Panel Data* (2nd ed.). MIT Press.
 
 WTTC (2025). *Travel & Tourism Economic Impact 2025*. World Travel & Tourism Council.
 
+# CAMBIO VER 1. BIBLIOGRAFÍA EXPANDIDA
+
+### Fuentes de datos primarias
+
+Eurostat. `tour_occ_nights`: Nights spent at tourist accommodation establishments — monthly data. https://ec.europa.eu/eurostat/
+
+Eurostat. `tour_cap_nat`: Tourism infrastructure capacity at national level. https://ec.europa.eu/eurostat/
+
+Eurostat. `tour_lfsq6r2`: Employment in the tourism industries. https://ec.europa.eu/eurostat/
+
+Eurostat. `avia_paoc`: Air passenger transport between reporting countries — monthly data. https://ec.europa.eu/eurostat/
+
+Eurostat. `avia_tf_aca`: Air transport of passengers, seats and flights — Poland, monthly data. https://ec.europa.eu/eurostat/
+
+Eurostat. `avia_tf_apal`: Air passenger transport by reporting airport, Poland. https://ec.europa.eu/eurostat/
+
+Eurostat. `prc_hicp_midx`: Harmonised Index of Consumer Prices — monthly data, 2015=100. https://ec.europa.eu/eurostat/
+
+Eurostat. `prc_hicp_aind`: HICP — annual data, specific inflation series. https://ec.europa.eu/eurostat/
+
+Eurostat. `prc_ppp_ind`: Price level indices — Purchasing Power Parities. https://ec.europa.eu/eurostat/
+
+Eurostat. `ert_bil_eur_m`: Euro/ECU exchange rates — bilateral, monthly (EUR/PLN, EUR/USD). https://ec.europa.eu/eurostat/
+
+Eurostat. `namq_10_gdp`: GDP and main components — quarterly data, both current prices (market prices) and real GDP (CLV-2010). https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc__custom_20251885/default/table
+
+
+Eurostat. `demo_pjan`: Population on 1 January by age and sex. https://ec.europa.eu/eurostat/
+
+Eurostat. `ei_bsco_m`: Consumer confidence indicator — monthly data. https://ec.europa.eu/eurostat/
+
+Office for National Statistics (ONS). Series D7BT (HICP CPIH), ABMI (GDP at constant prices) and UKPOP (population estimates). https://www.ons.gov.uk/
+
+International Monetary Fund. World Economic Outlook Database, April 2025 release. https://www.imf.org/external/datamapper/datasets
+
+UN Tourism (UNWTO). International tourism — inbound arrivals and inbound tourism expenditure (December 2025 release). https://www.unwto.org/
+
+Our World in Data. GDP by world regions — stacked-area dataset (compiled from World Bank and Maddison Project). https://ourworldindata.org/
+
+# CAMBIO VER 1. BIBLIOGRAFÍA EXPANDIDA
 ---
 
 # Glosario
