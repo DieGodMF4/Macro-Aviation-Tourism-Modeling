@@ -1,5 +1,5 @@
 # Análisis y Modelización del Impacto del Crecimiento Aéreo y Económico de Polonia en los Flujos Turísticos Europeos
-# Versión borrador 1.0
+# Versión borrador 1.1 22-05
 
 **Trabajo de Fin de Grado — Grado en Ciencia e Ingeniería de Datos**
 
@@ -107,12 +107,11 @@ El crecimiento turístico polaco no puede desligarse de la transformación estru
 
 ### 2.1.3. Pernoctaciones de turistas extranjeros como variable objetivo
 
-La variable objetivo del trabajo son las pernoctaciones mensuales de turistas extranjeros en establecimientos de alojamiento turístico en Polonia, registradas por Eurostat en el conjunto `tour_occ_nim` conforme al Reglamento (UE) 692/2011 sobre estadísticas europeas de turismo. La elección responde a tres consideraciones. En primer lugar, las pernoctaciones son una medida directa del impacto económico del turismo en el destino, superior a métricas alternativas como las llegadas (que no recogen la duración de la estancia) o los ingresos (sujetos a problemas de registro y armonización entre países). En segundo lugar, la frecuencia mensual permite capturar la dinámica estacional fina y la sensibilidad de corto plazo, a diferencia de las series anuales habituales. En tercer lugar, la armonización europea del Reglamento 692/2011 garantiza la comparabilidad y robustez de los datos.
+La variable objetivo del trabajo son las pernoctaciones mensuales de turistas extranjeros en establecimientos de alojamiento turístico en Polonia, registradas por Eurostat en el conjunto `tour_occ_nim` conforme al Reglamento (UE) 692/2011 sobre estadísticas europeas de turismo. La elección responde a tres consideraciones. En primer lugar, las pernoctaciones son una medida directa del impacto económico del turismo en el destino, superior a métricas alternativas como las llegadas (que no recogen la duración de la estancia) o los ingresos (sujetos a problemas de registro y armonización entre países). En segundo lugar, la frecuencia mensual permite capturar la dinámica estacional fina y la sensibilidad de corto plazo, a diferencia de las series anuales habituales, que no pueden llegar a ser lo suficientemente precisas. En tercer lugar, la armonización europea del Reglamento 692/2011 garantiza la comparabilidad y robustez de los datos.
 
-Una limitación relevante del conjunto `tour_occ_nim` condiciona el diseño del trabajo y debe documentarse de forma explícita: la variable de país de residencia solo distingue tres categorías agregadas —residentes nacionales, extranjeros y total— y no proporciona desglose por país de origen. El trabajo modela, por tanto, la serie agregada de pernoctaciones extranjeras, e incorpora la dimensión de los mercados emisores a través de las variables exógenas medidas en cada país de origen, ponderadas por las cuotas de pasajeros aéreos derivadas del conjunto `avia_paoc`.
+Una limitación relevante del conjunto `tour_occ_nim` condiciona el diseño del trabajo y es necesario documentarlo de forma explícita: la variable de país de residencia solo distingue tres categorías agregadas: residentes nacionales, extranjeros y total; por lo que no proporciona desglose por país de origen. El trabajo modela, por tanto, la serie agregada de pernoctaciones extranjeras, e incorpora la dimensión de los mercados emisores a través de las variables exógenas medidas en cada país de origen, ponderadas por las cuotas de pasajeros aéreos derivadas del conjunto `avia_paoc`.
 
-> **[ILUSTRACIÓN 2.2 AQUÍ — Evolución de las pernoctaciones de extranjeros en Polonia, 2011-2025]**
-> *Serie temporal mensual de pernoctaciones, con franja sombreada para el período COVID (2020-2022) y anotaciones de los hitos clave: expansión LCC, pico pre-pandemia de 2019, colapso de 2020 y recuperación completa hacia 2023-2024. Fuente: Eurostat tour_occ_nim.*
+![ILUSTRACIÓN 2.2 AQUÍ — Evolución de las pernoctaciones de extranjeros en Polonia, 2011-2025](../documentation_es/figures-memoria/fig_2_2_nights_overview.png)
 
 ### 2.1.4. Panorama metodológico: de la econometría clásica al aprendizaje profundo
 
