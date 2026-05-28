@@ -18,15 +18,18 @@
 
 ## Resumen
 
-Este Trabajo de Fin de Grado modeliza y predice la demanda turística internacional en Polonia. Integrando variables macroeconómicas y de conectividad aérea (Eurostat, ONS), se emplea una metodología de complejidad progresiva: modelos estadísticos (SARIMAX), aprendizaje automático (XGBoost), aprendizaje profundo (LSTM) y métodos bayesianos para inferir el impacto causal del COVID-19. Tras abordar el problema de endogeneidad de la capacidad aérea, los modelos se evalúan rigurosamente mediante validación temporal y tests de significancia. Finalmente, se desarrolla un pipeline prospectivo alimentado por proyecciones del FMI, simulando la demanda bajo escenarios económicos alternativos (tendencial, optimista y pesimista). Este enfoque proporciona una herramienta aplicada de gran valor para la planificación estratégica de aerolíneas y gestores de destinos.
+Este Trabajo de Fin de Grado modeliza y predice la demanda turística internacional en Polonia mediante una metodología de complejidad progresiva. Integrando variables macroeconómicas, demográficas y de conectividad aérea procedentes principalmente de Eurostat y del Fondo Monetario Internacional, se construye una batería comparativa de modelos predictivos que abarca series temporales clásicas (SARIMA, SARIMAX), aprendizaje automático (Random Forest, XGBoost) y aprendizaje profundo recurrente (LSTM con variables exógenas). Tras abordar de forma sistemática el problema de endogeneidad de la capacidad aérea, los modelos se evalúan mediante validación temporal con backtest expansivo y tests formales de significación. El trabajo se completa con dos componentes aplicados: un pipeline prospectivo alimentado por proyecciones del Fondo Monetario Internacional que simula la demanda bajo escenarios económicos alternativos, y un análisis causal del impacto del COVID-19 mediante series temporales estructurales bayesianas. El resultado es una herramienta integrada de planificación estratégica con utilidad operativa para aerolíneas y gestores de destinos turísticos.
 
 **Palabras clave:** demanda turística, predicción de series temporales, Polonia, LSTM, SARIMAX, XGBoost, estadística bayesiana, Eurostat, conectividad aérea, COVID-19, escenarios FMI.
+
+# !!!ANOTACIÓN CLAVE: RESUMEN CAMBIADO 
+> Es un poco más largo, no sé si hay un límite claro que no se pueda pasar. En la entrega del resumen José Daniel señaló que un máximo de 120 palabras, pero era orientativo y podía cambiarse.
 
 ---
 
 ## Abstract
 
-This Bachelor's Thesis models and predicts international tourism demand in Poland. By integrating macroeconomic and air connectivity variables (Eurostat, ONS), it employs a methodology of progressive complexity: statistical models (SARIMAX), machine learning (XGBoost), deep learning (LSTM), and Bayesian methods to infer the causal impact of COVID-19. After addressing the intrinsic endogeneity of air capacity, the models are rigorously evaluated through temporal validation and significance testing. Finally, a prospective pipeline powered by IMF projections is developed to simulate demand under alternative economic scenarios (baseline, optimistic, and pessimistic). This approach provides a highly valuable applied tool for the strategic planning of airlines and destination managers.
+This Bachelor's Thesis models and forecasts international tourism demand in Poland through a methodology of progressive complexity. By integrating macroeconomic, demographic and air connectivity variables mainly from Eurostat and from the International Monetary Fund, the work develops a comparative battery of predictive models spanning classical time series (SARIMA, SARIMAX), machine learning (Random Forest, XGBoost) and recurrent deep learning (LSTM with exogenous variables). After systematically addressing the endogeneity of air capacity, the models are evaluated through temporal validation with expanding-window backtesting and formal tests of significance. The work is completed with two applied components: a forward-looking pipeline fed by International Monetary Fund projections that simulates demand under alternative economic scenarios, and a causal analysis of the COVID-19 impact using Bayesian structural time series. The result is an integrated strategic planning tool with operational value for airlines and destination managers.
 
 **Keywords:** tourism demand, time series forecasting, Poland, LSTM, SARIMAX, XGBoost, Bayesian statistics, Eurostat, air connectivity, COVID-19, IMF scenarios.
 
@@ -36,7 +39,11 @@ This Bachelor's Thesis models and predicts international tourism demand in Polan
 
 ## 1.1. El turismo internacional como fenómeno socioeconómico
 
-El turismo internacional constituye uno de los sectores económicos más relevantes a escala global. Según el Barómetro Mundial del Turismo de la Organización Mundial del Turismo de Naciones Unidas, las llegadas internacionales alcanzaron los 1.400 millones en 2024, recuperando de forma prácticamente completa los niveles previos a la pandemia de COVID-19. El Consejo Mundial de Viajes y Turismo estimó que la contribución total del sector al Producto Interior Bruto mundial fue de 10,9 billones de dólares en 2024 — en torno al 10 % de la economía global — sosteniendo 357 millones de empleos directos e indirectos. En el ámbito europeo, el turismo aportó cerca de 1,8 billones de euros al PIB de la Unión Europea, consolidándose como uno de los motores estructurales del continente.
+El turismo internacional constituye uno de los sectores económicos más relevantes a escala global. Según el Barómetro Mundial del Turismo de la Organización Mundial del Turismo de Naciones Unidas, las llegadas internacionales alcanzaron los 1.400 millones en 2024, recuperando de forma prácticamente completa los niveles previos a la pandemia de COVID-19. El Consejo Mundial de Viajes y Turismo estimó que la contribución total del sector al Producto Interior Bruto mundial fue de 10,9 billones de dólares en 2024 — en torno al 10 % de la economía global — sosteniendo 357 millones de empleos directos e indirectos. En el ámbito europeo, el turismo aportó cerca de 1,8 billones de euros al PIB de la Unión Europea, consolidándose como uno de los motores estructurales del continente (WTTC Travel & Tourism Economic Impact, 2025).
+
+# !!!ANOTACIÓN 1: Fuente añadida y gráfico mejorado
+
+
 
 ![ILUSTRACIÓN 1.1 — Contribución del sector turístico al PIB por país europeo](../documentation_es/figures-memoria/fig_1_1_tourism_gdp_share.png)
 
@@ -50,13 +57,15 @@ La capacidad de anticipar la demanda turística con precisión tiene una importa
 
 La literatura económica sitúa al turismo internacional como un bien de lujo: el meta-análisis de Peng, Song, Crouch y Witt (2015), basado en 194 estudios de elasticidades, sitúa la elasticidad-renta media en torno a 2,0, lo que confirma una alta sensibilidad de la demanda turística a las fluctuaciones macroeconómicas y, por tanto, una notable exposición del sector a los ciclos económicos y a los shocks estructurales.
 
-Esta volatilidad quedó dramáticamente expuesta durante la pandemia de COVID-19, el mayor colapso conocido en la historia moderna del turismo internacional. Según Eurostat, las pernoctaciones de turistas extranjeros en la Unión Europea se desplomaron alrededor de un 85 % en abril de 2020 respecto al mismo mes del año anterior, y la serie tardó aproximadamente 28 meses en recuperar los niveles previos. Este episodio reforzó la necesidad de herramientas predictivas robustas, capaces de integrar no solo la dinámica temporal endógena del sector sino también los determinantes macroeconómicos, demográficos y de conectividad que condicionan los flujos turísticos.
+Esta volatilidad quedó dramáticamente expuesta durante la pandemia de COVID-19, el mayor colapso conocido en la historia moderna del turismo internacional. Según Eurostat, las pernoctaciones de turistas extranjeros en la Unión Europea se desplomaron alrededor de un 85 % en abril de 2020 respecto al mismo mes del año anterior, y la serie tardó aproximadamente 28 meses en recuperar los niveles previos (Eurostat: `tour_occ_nights`, 2025). Este episodio reforzó la necesidad de herramientas predictivas robustas, capaces de integrar no solo la dinámica temporal endógena del sector sino también los determinantes macroeconómicos, demográficos y de conectividad que condicionan los flujos turísticos.
+
+# !!!ANOTACIÓN 2: fuentes añadidas (verificar formato correcto?)
 
 # CAMBIO 2.
 
 ## 1.3. Polonia como caso de estudio
 
-Este trabajo toma como caso de estudio el turismo internacional en Polonia, una elección que responde a varios factores convergentes. Desde su adhesión a la Unión Europea el 1 de mayo de 2004, Polonia ha experimentado una transformación económica y estructural sin precedentes en la Europa reciente. Su PIB real per cápita, medido en volúmenes encadenados con referencia 2010, se duplicó holgadamente en el período 2004–2024, pasando de aproximadamente 7.300 EUR a 15.750 EUR por habitante (un crecimiento de un factor 2,16). Su nivel de precios, medido por el Índice de Precios al Consumo Armonizado, permanece notablemente por debajo de la media comunitaria, manteniendo una ventaja competitiva considerable en paridad de poder adquisitivo de cara a los visitantes extranjeros.
+Este trabajo toma como caso de estudio el turismo internacional en Polonia, una elección que responde a varios factores convergentes. Desde su adhesión a la Unión Europea el 1 de mayo de 2004, Polonia ha experimentado una transformación económica y estructural sin precedentes en la Europa reciente. Su PIB real per cápita, medido en volúmenes encadenados con referencia 2010, se duplicó holgadamente en el período 2004–2024, pasando de aproximadamente 7.300 EUR a 15.750 EUR por habitante (un crecimiento de un factor 2,16)(Eurostat: `namq_10_gdp` for nominal GDP at market prices, 2025); (Eurostat: `demo_pjan`, 2025). Su nivel de precios, medido por el Índice de Precios al Consumo Armonizado, permanece notablemente por debajo de la media comunitaria, manteniendo una ventaja competitiva considerable en paridad de poder adquisitivo de cara a los visitantes extranjeros.
 
 > ![ILUSTRACIÓN 1.2: Crecimiento paralelo de la conectividad aérea y del PIB real per cápita de Polonia, 2004–2024](../documentation_es/figures-memoria/fig_1_2_pax_gdp_poland.png)
 
@@ -190,7 +199,9 @@ El trabajo desarrolla y consolida las competencias específicas del Grado en Cie
 
 **ED4. Capacidad de identificar y analizar problemas y diseñar, desarrollar, implementar, verificar y documentar soluciones software en ámbitos de aplicación de la Inteligencia Artificial en Ciencia e Ingeniería de Datos.** Esta competencia se evidencia en el ciclo completo del trabajo: identificación temprana del problema de endogeneidad de la capacidad aérea, diseño del esquema de cuatro especificaciones de complejidad decreciente como respuesta empírica al problema, implementación reproducible en cuadernos Jupyter, verificación mediante tests estadísticos formales y documentación detallada tanto en código como en la presente memoria.
 
-**ED6. Capacidad para tener un conocimiento profundo de los principios fundamentales y modelos utilizados en Ciencia de Datos, particularmente las relacionadas con el análisis, predicción y prospectiva de grandes volúmenes de datos.** Esta es la competencia más directamente alineada con la naturaleza del trabajo, que combina análisis exploratorio multivariante (NB01-NB03), predicción mediante una batería de modelos (NB05-NB07) y prospectiva condicionada por escenarios externos del FMI (NB08), todo ello sobre un panel integrado de datos macroeconómicos y turísticos.
+**ED6. Capacidad para tener un conocimiento profundo de los principios fundamentales y modelos utilizados en Ciencia de Datos, particularmente las relacionadas con el análisis, predicción y prospectiva de grandes volúmenes de datos.** Esta es la competencia más directamente alineada con la naturaleza del trabajo, que combina análisis exploratorio multivariante, predicción mediante una batería de modelos y prospectiva condicionada por escenarios externos del FMI, todo ello sobre un panel integrado de datos macroeconómicos y turísticos.
+
+# !!!ANOTACIÓN 3: solo texto, sin mencionar nb aqui
 
 **ED9 (Principal). Capacidad para definir en la empresa problemas del dominio de Ciencia e Ingeniería de Datos y trasladar los análisis estadísticos a actuaciones de Inteligencia de Negocios conducidas por los datos para mejorar el rendimiento.** Esta competencia se materializa de forma especialmente nítida en los módulos aplicados del trabajo: el pipeline prospectivo del cuaderno NB08, que traduce proyecciones macroeconómicas del FMI en pronósticos de demanda turística accionables, y el modelo del cuaderno NB09, diseñado en diálogo con un economista con experiencia en el sector aéreo y entregado en forma de fórmula cerrada interpretable, directamente utilizable para la planificación de capacidad en aerolíneas. Ambos módulos ejemplifican la traslación de análisis estadísticos a Inteligencia de Negocios efectiva.
 
@@ -228,6 +239,7 @@ La Tabla 3.1 resume el grado de relación del trabajo con cada uno de los diecis
 # Capítulo 4. Desarrollo
 
 Este capítulo describe la metodología seguida y las fases iniciales del desarrollo del trabajo. Conforme a la estructura acordada con el tutor, este capítulo cubre las fases que van desde la comprensión del problema y los datos hasta la preparación del panel de variables, es decir, los cuadernos Jupyter NB00 a NB04. La construcción y la evaluación de los modelos predictivos —cuadernos NB05 a NB09— se desarrollan en el Capítulo 5, dado que sus resultados son indisociables de la presentación misma de cada modelo. No obstante, este capítulo introduce el marco metodológico común y describe brevemente las técnicas que se aplicarán posteriormente, de modo que el Capítulo 5 pueda concentrarse en los resultados sin necesidad de presentar las técnicas de cero.
+El código fuente completo del trabajo, organizado en diez cuadernos Jupyter ejecutables y reproducibles (NB00 a NB09), está disponible públicamente en el repositorio de GitHub https://github.com/DieGodMF4/Macro-Aviation-Tourism-Modeling, junto con los conjuntos de datos brutos y procesados, los scripts de generación de figuras y la presente memoria. Las menciones a los cuadernos a lo largo de este capítulo y del Capítulo 5 utilizan la nomenclatura abreviada NB00 a NB09 conforme a la convención del repositorio; cada cuaderno tiene un nombre descriptivo dentro de la carpeta docs/ que facilita su identificación.
 
 ## 4.1. Metodología
 
@@ -255,7 +267,9 @@ Antes de describir las fases concretas de preparación de datos, conviene presen
 
 **Random Forest y XGBoost.** Modelos basados en *ensembles* de árboles de decisión. Random Forest (Breiman, 2001) promedia las predicciones de árboles entrenados sobre muestras *bootstrap*; XGBoost (Chen y Guestrin, 2016) optimiza secuencialmente los errores de modelos previos mediante *gradient boosting*. Ambos capturan relaciones no lineales e interacciones entre variables sin necesidad de especificación funcional previa.
 
-**LSTM (Long Short-Term Memory).** Red neuronal recurrente diseñada para capturar dependencias temporales de largo plazo mediante puertas de memoria que controlan el flujo de información a través del tiempo. En este trabajo se exploran dos variantes arquitecturales: LSTM-1step (predicción a un paso, aplicable recursivamente para horizontes mayores) y LSTM-direct12 (predicción directa del vector completo de doce meses en un único paso).
+**LSTM (Long Short-Term Memory).** Red neuronal recurrente diseñada por Hochreiter y Schmidhuber (1997) para capturar dependencias temporales de largo plazo mediante puertas de memoria que controlan el flujo de información a través del tiempo, superando los problemas de gradiente que afectan a las arquitecturas recurrentes clásicas. Su aplicación a la predicción de demanda turística ha sido validada por Salamanis et al. (2022), que documentan mejoras significativas frente a los modelos clásicos en horizontes largos. En este trabajo se exploran dos variantes arquitecturales: LSTM-1step (predicción a un paso, aplicable recursivamente para horizontes mayores) y LSTM-direct12 (predicción directa del vector completo de doce meses en un único paso).
+
+# !!!ANOTACIÓN LSTM fuente nueva (añadida)
 
 **CausalImpact y BSTS.** Marco bayesiano desarrollado por Brodersen et al. (2015) para inferencia causal contrafactual en series temporales. A partir de un modelo *Bayesian Structural Time Series* entrenado sobre el período pre-intervención, construye una serie contrafactual que estima cuál habría sido la evolución del objetivo en ausencia del shock. La diferencia entre serie observada y contrafactual, integrada en el tiempo y dotada de un intervalo de credibilidad, constituye la estimación del impacto causal.
 
@@ -578,7 +592,9 @@ Si el trabajo dejase a la comunidad un único hallazgo metodológico, éste ser�
 
 ### 6.1.3. La distinción entre predicción y explicación
 
-Una segunda lección, formulada de manera particularmente clara en el cuaderno NB09 y resumida en una frase que mereció destacarse durante la fase de validación con el tutor académico, es que **la mejor predicción no es la mejor explicación**. Un modelo que predice excepcionalmente bien no proporciona, por ese solo hecho, una comprensión causal de los mecanismos subyacentes. El modelo de capacidad aérea del NB09 ilustra este principio con claridad: su capacidad predictiva es alta porque la inercia del propio ciclo de planificación captura la mayor parte de la varianza; el coeficiente del PIB, que es la pieza interpretable de la fórmula, presenta significación marginal y un R² bajo. El modelo es valioso como instrumento de simulación de escenarios, pero no debe presentarse como una explicación causal del comportamiento de las aerolíneas. Esta distinción, aparentemente sutil, resulta crucial para la honestidad académica del trabajo y para su uso responsable en contextos aplicados. Como subrayó el tutor académico durante la fase de validación de los resultados, "la mejor predicción no es la mejor explicación; una buena predicción no implica causalidad".
+Una segunda lección, formulada de manera particularmente clara en el cuaderno NB09 y resumida en una frase que mereció destacarse durante la fase de validación con el tutor académico, es que **la mejor predicción no es necesariamente la mejor explicación**. Un modelo que predice excepcionalmente bien no proporciona, por ese solo hecho, una comprensión causal de los mecanismos subyacentes. El modelo de capacidad aérea del NB09 ilustra este principio con claridad: su capacidad predictiva es alta porque la inercia del propio ciclo de planificación captura la mayor parte de la varianza; el coeficiente del PIB, que es la pieza interpretable de la fórmula, presenta significación marginal y un R² bajo. El modelo es valioso como instrumento de simulación de escenarios, pero no debe presentarse como una explicación causal del comportamiento de las aerolíneas. Esta distinción, aparentemente sutil, resulta crucial para la honestidad académica del trabajo y para su uso responsable en contextos aplicados. Como subrayó el tutor académico durante la fase de validación de los resultados, "la mejor predicción no es necesariamente la mejor explicación; una buena predicción no implica causalidad".
+
+# !!!ANOTACIÓN leve: "mejor predicción no es necesariamente la mejor explicación"
 
 ### 6.1.4. La distinción entre objetivo académico y objetivo operativo
 
@@ -665,6 +681,8 @@ Gunter, U. y Smeral, E. (2016). The decline of tourism income elasticities in a 
 Harvey, D., Leybourne, S. y Newbold, P. (1997). Testing the equality of prediction mean squared errors. *International Journal of Forecasting*, 13(2), 281–291.
 
 Hewamalage, H., Bergmeir, C. y Bandara, K. (2021). Recurrent Neural Networks for Time Series Forecasting: Current status and future directions. *International Journal of Forecasting*, 37(1), 388–427.
+
+Hochreiter, S. y Schmidhuber, J. (1997). Long Short-Term Memory. Neural Computation, 9(8), 1735–1780.
 
 Hoeting, J. A., Madigan, D., Raftery, A. E. y Volinsky, C. T. (1999). Bayesian model averaging: A tutorial. *Statistical Science*, 14(4), 382–417.
 
