@@ -61,7 +61,7 @@ Esta volatilidad quedó dramáticamente expuesta durante la pandemia de COVID-19
 
 # !!!ANOTACIÓN 2: fuentes añadidas (verificar formato correcto?)
 
-# CAMBIO 2.
+# !!CAMBIO 2.
 
 ## 1.3. Polonia como caso de estudio
 
@@ -73,7 +73,7 @@ La Ilustración 1.2 sintetiza la narrativa macroeconómica central del trabajo: 
 
 En 2024, Polonia registró la segunda tasa de crecimiento turístico más alta de toda la Unión Europea —solo superada por Malta— con un incremento interanual cercano al 6 % en pernoctaciones internacionales. La combinación de dinamismo económico, competitividad en precios, expansión de la conectividad aérea y crecimiento turístico sostenido convierte a Polonia en un laboratorio idóneo para el análisis cuantitativo de la interacción entre variables macroeconómicas, conectividad aérea y demanda turística.
 
-# CAMBIO 2.
+# !!CAMBIO 2.
 
 ## 1.4. Objetivo general y orientación dual del trabajo
 
@@ -201,7 +201,7 @@ El trabajo desarrolla y consolida las competencias específicas del Grado en Cie
 
 **ED6. Capacidad para tener un conocimiento profundo de los principios fundamentales y modelos utilizados en Ciencia de Datos, particularmente las relacionadas con el análisis, predicción y prospectiva de grandes volúmenes de datos.** Esta es la competencia más directamente alineada con la naturaleza del trabajo, que combina análisis exploratorio multivariante, predicción mediante una batería de modelos y prospectiva condicionada por escenarios externos del FMI, todo ello sobre un panel integrado de datos macroeconómicos y turísticos.
 
-# !!!ANOTACIÓN 3: solo texto, sin mencionar nb aqui
+# !!!ANOTACIÓN 3: solo texto, sin mencionar nb aquí
 
 **ED9 (Principal). Capacidad para definir en la empresa problemas del dominio de Ciencia e Ingeniería de Datos y trasladar los análisis estadísticos a actuaciones de Inteligencia de Negocios conducidas por los datos para mejorar el rendimiento.** Esta competencia se materializa de forma especialmente nítida en los módulos aplicados del trabajo: el pipeline prospectivo del cuaderno NB08, que traduce proyecciones macroeconómicas del FMI en pronósticos de demanda turística accionables, y el modelo del cuaderno NB09, diseñado en diálogo con un economista con experiencia en el sector aéreo y entregado en forma de fórmula cerrada interpretable, directamente utilizable para la planificación de capacidad en aerolíneas. Ambos módulos ejemplifican la traslación de análisis estadísticos a Inteligencia de Negocios efectiva.
 
@@ -265,11 +265,13 @@ Antes de describir las fases concretas de preparación de datos, conviene presen
 
 **Holt-Winters.** Suavizado exponencial con componentes de nivel, tendencia y estacionalidad. Sus tres parámetros se estiman por máxima verosimilitud. Representa el estado del arte estadístico clásico para series estacionales sin variables exógenas.
 
+**Naive estacional.** Modelo de referencia trivial que consiste en predecir el valor de cualquier mes futuro como el valor observado en el mismo mes del año anterior: `prediction[t] = observed[t-12]`. No requiere estimación de parámetros ni ajuste y funciona como benchmark mínimo: cualquier modelo más sofisticado debe superar al naive para justificar su uso. En series fuertemente estacionales como la del presente trabajo, el naive estacional captura por construcción toda la regularidad anual, lo que lo convierte en un competidor sorprendentemente fuerte en horizontes cortos. Su rendimiento en el conjunto de baselines (Sección 5.1) y como referencia frente al modelo aplicado de capacidad aérea (Sección 5.5) se discutirá en el Capítulo 5.
+
 **Random Forest y XGBoost.** Modelos basados en *ensembles* de árboles de decisión. Random Forest (Breiman, 2001) promedia las predicciones de árboles entrenados sobre muestras *bootstrap*; XGBoost (Chen y Guestrin, 2016) optimiza secuencialmente los errores de modelos previos mediante *gradient boosting*. Ambos capturan relaciones no lineales e interacciones entre variables sin necesidad de especificación funcional previa.
 
 **LSTM (Long Short-Term Memory).** Red neuronal recurrente diseñada por Hochreiter y Schmidhuber (1997) para capturar dependencias temporales de largo plazo mediante puertas de memoria que controlan el flujo de información a través del tiempo, superando los problemas de gradiente que afectan a las arquitecturas recurrentes clásicas. Su aplicación a la predicción de demanda turística ha sido validada por Salamanis et al. (2022), que documentan mejoras significativas frente a los modelos clásicos en horizontes largos. En este trabajo se exploran dos variantes arquitecturales: LSTM-1step (predicción a un paso, aplicable recursivamente para horizontes mayores) y LSTM-direct12 (predicción directa del vector completo de doce meses en un único paso).
 
-# !!!ANOTACIÓN LSTM fuente nueva (añadida)
+# !!!ANOTACIÓN LSTM fuente nueva (añadida) + Naive explicado
 
 **CausalImpact y BSTS.** Marco bayesiano desarrollado por Brodersen et al. (2015) para inferencia causal contrafactual en series temporales. A partir de un modelo *Bayesian Structural Time Series* entrenado sobre el período pre-intervención, construye una serie contrafactual que estima cuál habría sido la evolución del objetivo en ausencia del shock. La diferencia entre serie observada y contrafactual, integrada en el tiempo y dotada de un intervalo de credibilidad, constituye la estimación del impacto causal.
 
@@ -320,7 +322,10 @@ El cuaderno NB04 culmina la fase de preparación de datos con la construcción d
 
 **Tratamiento del COVID-19.** Se construyen dos *dummies* complementarias: `covid_strong` (igual a 1 entre marzo de 2020 y diciembre de 2021), que captura la fase aguda del colapso, y `covid_post` (igual a 1 desde enero de 2022), que captura el cambio de nivel permanente post-pandemia. Esta estructura de dos fases permite al modelo estimar simultáneamente el efecto del colapso agudo y el desplazamiento de nivel posterior, evitando la necesidad de correcciones manuales.
 
-**Variables con retardo.** Se incluyen, con justificación bibliográfica y empírica, `nights_lag1` y `nights_lag12` (retardos autorregresivos), `gdp_origins_lag3` (alineado con el pico de correlación cruzada del PIB), `cci_DE_lag2` (alineado con la dinámica adelantada de la confianza) y `seats_lag6` (predeterminado por el horizonte de asignación de *slots* IATA).
+**Variables con retardo.** En el análisis de series temporales, una variable con retardo `lag_k` representa el valor de esa variable observado `k` meses antes del momento de referencia: así, `nights_lag12` denota las pernoctaciones ocurridas doce meses antes del mes actual, y `cci_DE_lag2` denota el Indicador de Confianza del Consumidor alemán observado dos meses antes. La incorporación de variables con retardo en un modelo predictivo cumple tres funciones complementarias. En primer lugar, captura la **inercia temporal** de la serie: la demanda turística de un mes determinado está fuertemente correlacionada con la del mismo mes del año anterior por motivos estacionales evidentes, y esta correlación es información explotable que se materializa en el retardo de doce meses. En segundo lugar, permite incorporar variables explicativas que actúan con **desfase temporal**, como los indicadores adelantados de confianza del consumidor —que típicamente anticipan las decisiones de gasto con uno o dos meses de antelación—. En tercer lugar, y particularmente relevante para el presente trabajo, los retardos permiten reflejar **restricciones operativas reales**: las aerolíneas planifican capacidad con varios meses de antelación según las directrices IATA sobre asignación de slots aeroportuarios, lo que justifica el uso de la capacidad aérea observada seis meses antes (seats_lag6) como predictor de la demanda contemporánea sin incurrir en el problema de endogeneidad bidireccional documentado en el Capítulo 2.
+Con estas tres justificaciones, las variables con retardo construidas en este cuaderno son `nights_lag1` y `nights_lag12` (retardos autorregresivos de uno y doce meses de la propia variable objetivo), `gdp_origins_lag3` (alineado con el pico de correlación cruzada del PIB de los mercados emisores observado en el NB02), `cci_DE_lag2` (alineado con la dinámica adelantada de la confianza del consumidor alemán) y `seats_lag6` (predeterminado por el horizonte estándar de asignación de slots IATA). La elección de cada retardo específico está documentada empíricamente: se identifica el retardo de cada variable como aquel que maximiza la correlación cruzada con la variable objetivo dentro del rango temporalmente razonable, evitando así la introducción arbitraria de variables retardadas sin justificación.
+
+# !!!ANOTACIÓN lags en variables explicado
 
 **Diagnóstico de colinealidad.** Se calcula el Factor de Inflación de la Varianza (VIF) sobre primeras diferencias, que es la métrica relevante cuando las series comparten tendencia secular. El diagnóstico revela tres clusters problemáticos con correlaciones superiores a 0,90, que conducen a decisiones de selección de variables documentadas en una tabla de decisión reproducible (eliminación de `gdp_pc_DE` por redundancia con el agregado ponderado, eliminación del CCI contemporáneo a favor del retardo, etc.).
 
@@ -400,9 +405,9 @@ El cuaderno NB06 implementa Random Forest y XGBoost en cuatro especificaciones c
 
 Los resultados del backtest con ventana expansiva sobre el período excluyendo COVID, a horizonte de 12 meses, se presentan en la Tabla 5.2.
 
-**Tabla 5.2. MAPE en backtest ex-COVID a horizonte 12 meses, por especificación.**
+**Tabla 5.2. MAPE en backtest expansivo ex-COVID por especificación y horizonte de predicción**. Las columnas h=1, h=3, h=6, h=12 indican el número de meses de antelación con que se realiza la predicción: por ejemplo, h=6 es la predicción de la demanda con seis meses de antelación al mes objetivo. Valores menores indican mejor precisión.
 
-| Modelo y especificación | h=1 | h=3 | h=6 | h=12 |
+| Modelo y especificación | 1 mes | 3 meses | 6 meses | 12 meses |
 |:---|---:|---:|---:|---:|
 | RF M1-Full | 6,2 % | 7,0 % | 7,2 % | 8,2 % |
 | RF M2-Curated | 6,2 % | 7,1 % | 7,2 % | 8,7 % |
@@ -412,6 +417,8 @@ Los resultados del backtest con ventana expansiva sobre el período excluyendo C
 | XGB M2-Curated | 5,9 % | 7,5 % | 8,3 % | 9,4 % |
 | XGB M3-NoLag1 | 7,1 % | 10,3 % | 12,6 % | 14,3 % |
 | XGB M4-MacroOnly | 11,2 % | 17,5 % | 19,6 % | 16,9 % |
+
+# !!!ANOTACIÓN Aclaración significado de "h".
 
 **Lectura de los hallazgos.** La progresión M1 → M2 → M3 → M4 cuantifica el coste empírico de cada restricción metodológica.
 
@@ -423,11 +430,11 @@ El paso de M3 a M4 elimina los retardos seriales remanentes (`nights_lag12` y `s
 
 **Redistribución de la importancia de variables.** Cuando los atajos autorregresivos se eliminan progresivamente, la importancia se redistribuye sanamente hacia las variables macroeconómicas. En M1, tres variables (la capacidad contemporánea, `nights_lag1` y `nights_lag12`) concentran el 97 % de la importancia, dejando a las macroeconómicas prácticamente sin contribución. En M3, en cambio, emergen con importancia visible `cci_DE_lag2`, `hicp_ratio` y `exr_pln`, validando empíricamente los determinantes teóricos identificados por la literatura una vez que se eliminan los atajos que los enmascaraban.
 
-> **[ILUSTRACIÓN 5.2 AQUÍ — MAPE por horizonte para las cuatro especificaciones]**
-> *Dos paneles, uno por modelo (RF y XGB). En cada panel, cuatro líneas con MAPE en eje Y y horizonte (1, 3, 6, 12) en eje X.*
+![ILUSTRACIÓN 5.2 AQUÍ — MAPE por horizonte para las cuatro especificaciones](../figures/models/06_02_mape_by_horizon.png)
 
-> **[ILUSTRACIÓN 5.3 AQUÍ — Heatmap de importancia de variables a través de las cuatro especificaciones]**
-> *Heatmap con variables en filas y especificaciones (M1–M4) en columnas, celdas coloreadas por importancia. Visualiza la redistribución progresiva de la importancia hacia las macroeconómicas al restringir el feature set.*
+![ILUSTRACIÓN 5.3 AQUÍ — Heatmap de importancia de variables a través de las cuatro especificaciones](../figures/models/06_04_feature_importance_heatmap.png)
+
+# !!CAMBIO Nuevos plots añadidos, checkear tamaño (son necesarios)?
 
 ## 5.3. Aprendizaje profundo con transformación interanual (NB07)
 
@@ -468,8 +475,7 @@ La asimetría entre arquitecturas es interpretable. La variante direct12 produce
 
 El backtest expansivo sobre dieciséis orígenes distribuidos en los bloques pre y post-COVID confirma la robustez del hallazgo. En el bloque post-COVID a horizonte de doce meses, que es el horizonte y régimen relevantes para el despliegue, LSTM-direct12 V2 alcanza un MAPE del 3,33 %, frente a 6,93 % de XGB-noCOVID, prácticamente la mitad. La precisión del LSTM en este horizonte largo es además **estable**: oscila entre el 3,33 % y el 7,28 % a través de los cuatro horizontes evaluados (1, 3, 6 y 12 meses), sin degradación catastrófica.
 
-> **[ILUSTRACIÓN 5.4 AQUÍ — MAPE por horizonte en el backtest, separado por bloques pre y post-COVID]**
-> *Dos paneles. En cada uno, líneas para los seis modelos comparados (cuatro variantes LSTM + dos XGB) con MAPE en Y y horizonte en X.*
+![ILUSTRACIÓN 5.4 AQUÍ — MAPE por horizonte en el backtest, separado por bloques pre y post-COVID](../figures/models/07_02_rolling_mape_by_horizon.png)
 
 ### 5.3.5. Tests de Diebold-Mariano
 
@@ -478,6 +484,22 @@ Los tests pareados de Diebold-Mariano a horizonte de 12 meses en el bloque post-
 ### 5.3.6. Ranking consolidado tras NB07
 
 Combinando los baselines del NB05, los modelos ML del NB06 y los del NB07, el ranking consolidado por MAPE en el hold-out de los últimos doce meses excluyendo soluciones degeneradas sitúa al **LSTM-direct12 V2 como el mejor modelo del trabajo (4,36 %)**, seguido del LSTM-1step V2 (4,71 %), XGB-noCOVID (5,83 %), SARIMA univariante (6,0 %) y los modelos de árboles del NB06 (6-7 %).
+
+# !!!ANOTACIÓN Variables en modelo ganador nuevo apartado
+
+### 5.3.7. Importancia de variables del modelo ganador
+
+A diferencia de los modelos basados en árboles del NB06, la arquitectura LSTM no expone una medida nativa de importancia de variables: sus pesos internos se distribuyen no linealmente a lo largo de las dos capas recurrentes y las capas densas posteriores, y no admiten interpretación directa. Para obtener una medida comparable con la reportada en la Ilustración 5.3 del XGBoost, aplicamos al modelo ganador LSTM-direct12 V2 la **permutación de importancia** (Fisher, Rudin y Dominici, 2019), técnica *model-agnostic* que cuantifica la contribución de cada variable midiendo cuánto se degrada el MAPE sobre el hold-out cuando los valores temporales de esa variable se permutan aleatoriamente dentro de la ventana de entrada del modelo.
+
+El procedimiento, repetido diez veces por variable para estimar la dispersión del shuffling, opera sobre la ventana de doce meses que el LSTM-direct12 V2 utiliza como input. Una variable cuya permutación temporal degrada el MAPE en una cantidad apreciable aporta información útil al modelo; una variable cuya permutación deja el MAPE prácticamente inalterado no la aporta.
+
+![ILUSTRACIÓN 5.4.2 — Permutation importance del LSTM-direct12 V2](../figures/models/07_11_lstm_permutation_importance.png)
+
+**Lectura del resultado.** El MAPE de referencia del modelo es del 4,358 % sobre el hold-out. Las degradaciones individuales obtenidas al permutar cada variable se sitúan en el rango ±0,01 puntos porcentuales —dos órdenes de magnitud por debajo de las desviaciones típicas observables en otros estudios donde la permutation importance identifica variables claramente predictivas—. Equivalentemente, ninguna variable produce una variación del MAPE estadísticamente distinguible de cero con diez repeticiones, dado que las desviaciones típicas observadas son del mismo orden de magnitud que las medias. Adicionalmente, varias variables presentan importancias **negativas** (notablemente `seats_lag6`, `month_04` o `hicp_ratio`), lo que indica que el ruido aleatorio del shuffling domina sobre cualquier señal sistemática de importancia.
+
+Este resultado, lejos de constituir un defecto del análisis o del modelo, **confirma empíricamente una propiedad estructural** del LSTM-direct12 V2 ya documentada implícitamente a lo largo del trabajo: la transformación interanual descrita en la Sección 5.3.1 absorbe la práctica totalidad de la variación predecible en el denominador `nights[t-12]`, que actúa como ancla observada al rescalar las predicciones de YoY a niveles absolutos. Una vez aplicada esta transformación, el modelo no necesita —ni de hecho aprende— una sensibilidad significativa a las variables macroeconómicas o estacionales individuales para producir predicciones precisas. Toda la información estructural relevante para alcanzar un MAPE inferior al 5 % se encuentra en el reescalado por la observación de doce meses atrás. Esta lectura es plenamente consistente con tres hallazgos previos del trabajo: (i) la insensibilidad del LSTM a los escenarios macroeconómicos alternativos del IMF documentada en el NB08, que motivó la introducción del benchmark de elasticidad de Peng et al. (2015) como instrumento complementario; (ii) la redistribución sana de importancias hacia las macroeconómicas en la especificación M3 del XGBoost del NB06 cuando se restringe `nights_lag1`; y (iii) la advertencia general de Gunter y Smeral (2016) sobre la dilución de las elasticidades macroeconómicas en modelos con estructura autorregresiva dominante.
+
+La consecuencia operativa de esta confirmación es relevante: el LSTM-direct12 V2 es un excelente **predictor central**, pero su uso como instrumento para responder a preguntas del tipo "¿cuánto influye el PIB de los emisores en la demanda turística?" no está justificado, porque el modelo trata esa variable como información residual una vez controlado el ancla estacional. La complementariedad con métodos calibrados explícitamente para la sensibilidad estructural —el benchmark de elasticidad del NB08, o el modelo OLS del NB09— no es opcional sino **necesaria** para cubrir el ámbito de análisis condicionado a inputs macroeconómicos.
 
 ## 5.4. Escenarios prospectivos y análisis causal del COVID (NB08)
 
@@ -511,8 +533,7 @@ La aplicación del marco *CausalImpact* sobre la serie de pernoctaciones extranj
 
 Este resultado es metodológicamente robusto y proporciona una dimensión causal complementaria al resto del trabajo, que es de naturaleza predictiva. Permite responder a la pregunta *"¿cuánto habría crecido Polonia turísticamente sin COVID?"* con un número y un intervalo, en lugar de con una comparación ingenua frente al año anterior que ignoraría el crecimiento contrafactual.
 
-> **[ILUSTRACIÓN 5.7 AQUÍ — Análisis CausalImpact del COVID]**
-> *Tres paneles. Panel A: serie observada en negro y contrafactual bayesiano en azul, con banda de credibilidad del 95 %. Panel B: efecto puntual mes a mes. Panel C: efecto acumulado, descendente desde 0 hasta aproximadamente –23,6M. Línea vertical roja en marzo de 2020 marcando la intervención.*
+![ILUSTRACIÓN 5.7 AQUÍ — Análisis CausalImpact del COVID](../figures/scenarios/08_04_causal_impact.png)
 
 ## 5.5. Modelo aplicado de predicción de capacidad aérea (NB09)
 
@@ -559,7 +580,7 @@ La Tabla 5.4 resume los principales modelos del trabajo con sus respectivos MAPE
 
 | Modelo | Objetivo | Cuaderno | MAPE |
 |:---|:---|:---:|---:|
-| LSTM-direct12 V2 | Pernoctaciones (YoY) | NB07 | **4,36 %** |
+| LSTM-direct12 V2* | Pernoctaciones (YoY) | NB07 | **4,36 %** |
 | LSTM-1step V2 | Pernoctaciones (YoY) | NB07 | 4,71 % |
 | XGB-noCOVID | Pernoctaciones | NB07 | 5,83 % |
 | XGB-Original (M3) | Pernoctaciones | NB07 | 5,96 % |
@@ -571,6 +592,10 @@ La Tabla 5.4 resume los principales modelos del trabajo con sus respectivos MAPE
 | Modelo B (XGBoost) | Capacidad aérea | NB09 | 1,77 % |
 | Naive Seasonal | Capacidad aérea | NB09 | 1,82 % |
 | Modelo A (OLS log-log) | Capacidad aérea | NB09 | 2,01 % |
+
+**Pie de fila de la fila LSTM-direct12 V2*: Modelo ganador en MAPE pero con sensibilidad estructural a inputs macroeconómicos despreciable; véase Sección 5.3.7.
+
+# !!!ANOTACIÓN leve: añadido pie de fila en relación a lo otro visto
 
 Holt-Winters se excluye del ranking por ser una solución degenerada (Sección 5.1). Los MAPE de los modelos de capacidad aérea (NB09) son notablemente más bajos que los de los modelos de pernoctaciones porque la serie de capacidad es estructuralmente más suave y predecible —la capacidad se programa con antelación y cambia menos abruptamente que la demanda turística observada— por lo que no son directamente comparables con los de las demás filas.
 
@@ -588,7 +613,11 @@ El trabajo ha cubierto los cinco objetivos específicos enunciados en el Capítu
 
 ### 6.1.2. La principal contribución metodológica
 
-Si el trabajo dejase a la comunidad un único hallazgo metodológico, éste sería la **demostración empírica de la fuerza de la formulación interanual en redes recurrentes aplicadas a series con cambio estructural**. La transformación, conceptualmente sencilla, descompone la serie en una forma estacional estable —que la red aprende— y un nivel cambiante —que se queda en el denominador observado y se reintroduce automáticamente al rescalar la predicción—. La magnitud de la mejora obtenida sobre la formulación en niveles es lo bastante grande como para que no pueda atribuirse a azar ni a optimización de hiperparámetros: viene del cambio de representación del objetivo, no del modelo. Esta lección es generalizable a otras series temporales con cambios de nivel estructurales —shocks pandémicos, crisis financieras, reformas regulatorias— y constituye una recomendación de diseño con potencial de impacto más allá del caso polaco.
+Si el trabajo dejase a la comunidad un único hallazgo metodológico, éste sería la **demostración empírica de la fuerza de la formulación interanual en redes recurrentes aplicadas a series con cambio estructural**. La transformación, conceptualmente sencilla, descompone la serie en una forma estacional estable —que la red aprende— y un nivel cambiante —que se queda en el denominador observado y se reintroduce automáticamente al rescalar la predicción—. La magnitud de la mejora obtenida sobre la formulación en niveles es lo bastante grande como para que no pueda atribuirse a azar ni a optimización de hiperparámetros: viene del cambio de representación del objetivo, no del modelo. 
+
+La revisión bibliográfica realizada en el marco del trabajo identifica varias aproximaciones documentadas para tratar shocks estructurales en series temporales estacionales: la detección formal de breakpoints (Bai y Perron, 2003; Hall, 2025), los modelos de cambio de régimen tipo Markov-switching (Lardic y Mignon, 2003), la descomposición flexible de tendencia con métodos bayesianos estructurales (Doornik et al., 2021) y el tratamiento del shock como sucesión de outliers en procedimientos de ajuste estacional automatizado. En el ámbito específico del tourism forecasting post-COVID, los estudios consultados (Polyzos et al., 2021; Hsieh, 2021; Salamanis et al., 2022) responden al cambio estructural mayoritariamente mediante modelos híbridos CNN-LSTM o incorporando datos alternativos como Google Trends, manteniendo la formulación del objetivo en niveles absolutos. La transformación del objetivo del modelo recurrente a tasa de variación interanual, tal y como se ha implementado en el presente trabajo, no se ha encontrado documentada de forma sistemática en la literatura específica del tourism forecasting consultada, aunque comparte fundamentación conceptual con prácticas operativas del ámbito de la logística y la planificación de retail (Opex Analytics, 2020). La magnitud de la mejora obtenida sobre la formulación en niveles es lo bastante grande como para que no pueda atribuirse a azar ni a optimización de hiperparámetros: viene del cambio de representación del objetivo, no del modelo. Esta lección es generalizable a otras series temporales con cambios de nivel estructurales —shocks pandémicos, crisis financieras, reformas regulatorias— y constituye una recomendación de diseño con potencial de impacto más allá del caso polaco.
+
+# !!!ANOTACIÓN: Se añade bibliografía y se detalla el porqué
 
 ### 6.1.3. La distinción entre predicción y explicación
 
@@ -660,6 +689,8 @@ De acuerdo con la normativa de la Escuela de Ingeniería Informática, se declar
 
 Athanasopoulos, G., Hyndman, R. J., Song, H. y Wu, D. C. (2011). The tourism forecasting competition. *International Journal of Forecasting*, 27(3), 822–844.
 
+Bai, J. y Perron, P. (2003). Computation and analysis of multiple structural change models. Journal of Applied Econometrics, 18(1), 1–22.
+
 Box, G. E. P. y Jenkins, G. M. (1976). *Time Series Analysis: Forecasting and Control*. Holden-Day.
 
 Breiman, L. (2001). Random Forests. *Machine Learning*, 45(1), 5–32.
@@ -676,7 +707,11 @@ Crouch, G. I. (1995). A meta-analysis of tourism demand. *Annals of Tourism Rese
 
 Diebold, F. X. y Mariano, R. S. (1995). Comparing predictive accuracy. *Journal of Business & Economic Statistics*, 13(3), 253–263.
 
+Doornik, J. A., Castle, J. L. y Hendry, D. F. (2021). Modeling and forecasting the COVID-19 pandemic time-series data. Social Science Quarterly, 102(5), 2070–2087.
+
 Gunter, U. y Smeral, E. (2016). The decline of tourism income elasticities in a global context. *Tourism Economics*, 22(3), 466–483.
+
+Hall, S. G. (2025). On the detection of structural breaks: The case of the COVID shock. Journal of Forecasting, advance online publication.
 
 Harvey, D., Leybourne, S. y Newbold, P. (1997). Testing the equality of prediction mean squared errors. *International Journal of Forecasting*, 13(2), 281–291.
 
@@ -692,11 +727,15 @@ IATA (2024). *Worldwide Airport Slot Guidelines*, 10th edition. International Ai
 
 IMF (2025). *World Economic Outlook, April 2025*. International Monetary Fund.
 
+Lardic, S. y Mignon, V. (2003). Cointégration entre les marchés boursiers internationaux: une approche en termes de cointégration fractionnaire. Économie et Prévision, 159(3), 65–81.
+
 Li, G., Song, H. y Witt, S. F. (2005). Recent developments in econometric modeling and forecasting. *Journal of Travel Research*, 44(1), 82–99.
 
 Office for National Statistics (2022). *Consumer Prices Indices Technical Manual*. ONS.
 
 Peng, B., Song, H., Crouch, G. I. y Witt, S. F. (2015). A meta-analysis of international tourism demand elasticities. *Journal of Travel Research*, 54(5), 611–633.
+
+Polyzos, S., Samitas, A. y Spyridou, A. E. (2021). Tourism demand and the COVID-19 pandemic: An LSTM approach. Tourism Recreation Research, 46(2), 175–187.
 
 Reglamento (UE) n.º 692/2011 del Parlamento Europeo y del Consejo, de 6 de julio de 2011, relativo a las estadísticas europeas sobre el turismo. *Diario Oficial de la Unión Europea*, L 192/17.
 
@@ -718,7 +757,7 @@ Wooldridge, J. M. (2010). *Econometric Analysis of Cross Section and Panel Data*
 
 WTTC (2025). *Travel & Tourism Economic Impact 2025*. World Travel & Tourism Council.
 
-# CAMBIO VER 1. BIBLIOGRAFÍA EXPANDIDA
+# !!CAMBIO VER 1. BIBLIOGRAFÍA EXPANDIDA
 
 ### Fuentes de datos primarias
 
@@ -757,7 +796,7 @@ UN Tourism (UNWTO). International tourism — inbound arrivals and inbound touri
 
 Our World in Data. GDP by world regions — stacked-area dataset (compiled from World Bank and Maddison Project). https://ourworldindata.org/
 
-# CAMBIO VER 1. BIBLIOGRAFÍA EXPANDIDA
+# !!CAMBIO VER 1. BIBLIOGRAFÍA EXPANDIDA
 ---
 
 # Glosario
