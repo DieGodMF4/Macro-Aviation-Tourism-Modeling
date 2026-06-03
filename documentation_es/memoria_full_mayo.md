@@ -1,5 +1,5 @@
 # Análisis y Modelización del Impacto del Crecimiento Aéreo y Económico de Polonia en los Flujos Turísticos Europeos
-# Versión borrador 1.1 22-05
+# Versión borrador 2.3 02-06
 
 **Trabajo de Fin de Grado — Grado en Ciencia e Ingeniería de Datos**
 
@@ -231,8 +231,8 @@ La Tabla 3.1 resume el grado de relación del trabajo con cada uno de los diecis
 | 16. Paz, justicia e instituciones sólidas | 0 | No procede. |
 | **17. Alianzas para lograr objetivos** | **1 (Bajo)** | Uso exclusivo de datos abiertos y fuentes públicas auditables (Eurostat, ONS, FMI), publicación del código en repositorio público y compromiso con la ciencia abierta y la reproducibilidad. |
 
-> **[ILUSTRACIÓN 3.1 AQUÍ — Radar de alineamiento con los ODS]**
-> *Gráfico de radar visualizando las puntuaciones 0–3 de la Tabla 3.1, destacando los ODS 8 y 9 con puntuación máxima.*
+![ILUSTRACIÓN 3.1 AQUÍ — Radar de alineamiento con los ODS](../figures/report/fig_3_1_ods_radar.png)
+# !!CAMBIO: Diagrama correcto? Apropiado? Necesario?
 
 ---
 
@@ -295,24 +295,33 @@ El período de estudio abarca desde enero de 2011 hasta noviembre de 2025, con u
 
 **Integración del Reino Unido mediante chain-linking.** Tras la retirada del Reino Unido del Sistema Estadístico Europeo, sus series en Eurostat se interrumpen o presentan rupturas metodológicas difícilmente comparables con las del resto de mercados. Dado que el Reino Unido representa la tercera cuota mayor del tráfico aéreo hacia Polonia, excluirlo o extrapolarlo sería gravemente problemático. La solución adoptada es el encadenamiento estadístico con series oficiales del ONS: para cada serie afectada —HICP (serie ONS `D7BT`), PIB real (`ABMI`) y población (`UKPOP`)— se identifica un período de solapamiento con la serie de Eurostat, se calcula un factor de ajuste que iguala los niveles en el punto de empalme y se construye una serie compuesta que utiliza Eurostat antes del empalme y ONS (reescalado) después. Este procedimiento, estándar en econometría aplicada, preserva las tasas de crecimiento efectivas del ONS y mantiene la armonización del nivel con el resto del panel.
 
-> **[ILUSTRACIÓN 4.3 AQUÍ — Chain-linking del HICP del Reino Unido]**
-> *Tres líneas superpuestas en una sola gráfica: la serie original de Eurostat, la serie ONS y la serie compuesta resultante tras el ajuste. Punto vertical marcando el empalme.*
+![ILUSTRACIÓN 4.3 AQUÍ — Chain-linking del HICP del Reino Unido](../documentation_es/figures-memoria/fig_4_3_chain_linking_uk.png)
 
 ## 4.3. Análisis exploratorio univariante (NB01)
 
 El cuaderno NB01 caracteriza la variable objetivo mediante visualización temporal, descomposición estacional y análisis de la distribución. Las características estructurales más relevantes son una **estacionalidad muy marcada**, con un ratio entre el pico de agosto (alrededor de 1,87 millones en el período pre-pandemia) y el valle de enero (en torno a 783.000) cercano a 2,4; un **impacto severo del COVID-19**, con un colapso interanual del 96,3 % en abril de 2020 y un período de recuperación de aproximadamente 28 meses; y una **proporción de turistas extranjeros sobre el total** del orden del 18,8 % en promedio, lo que sitúa a Polonia como un destino predominantemente doméstico aunque con un segmento internacional creciendo a ritmo superior y constituyendo el foco del presente trabajo.
 
-> **[ILUSTRACIÓN 4.4 AQUÍ — Caracterización de la variable objetivo]**
-> *Tres paneles del NB01. Panel superior: serie temporal bruta de pernoctaciones 2011–2025, con franjas sombreadas para el período COVID. Panel central: crecimiento interanual, destacando el colapso de 2020. Panel inferior: heatmap año × mes, que revela la concentración estacional y el "parche oscuro" de 2020–2021.*
+![ILUSTRACIÓN 4.4 AQUÍ — Caracterización de la variable objetivo](../documentation_es/figures-memoria/fig_4_4_target_characterization.png)
 
 ## 4.4. Análisis exploratorio multivariante y diagnóstico estadístico (NB02–NB03)
 
-El cuaderno NB02 examina las relaciones entre la variable objetivo y las exógenas mediante matrices de correlación y funciones de correlación cruzada (CCF) a distintos retardos. Los hallazgos clave son los siguientes. En niveles, la capacidad aérea contemporánea (`seats`) presenta la correlación más alta con el objetivo (r = 0,88), seguida del ratio del HICP con signo esperado negativo (r = –0,63). En variaciones interanuales, que eliminan el componente tendencial compartido, el ranking cambia significativamente: la capacidad sigue liderando (r = 0,49) pero el Indicador de Confianza del Consumidor alemán con dos meses de retardo emerge como segundo predictor importante (r = 0,37), confirmando su papel de indicador adelantado genuino.
+El cuaderno NB02 examina las relaciones entre la variable objetivo y los regresores candidatos mediante matrices de correlación y funciones de correlación cruzada (CCF) a retardos del 0 al 12 meses, contrastando los resultados obtenidos en niveles absolutos frente a los obtenidos en variaciones interanuales (YoY). El contraste entre ambas representaciones resulta extraordinariamente revelador y orienta el resto de decisiones metodológicas del trabajo.
 
-El cuaderno NB03 formaliza los tests de propiedades estadísticas: estacionariedad (ADF y KPSS), causalidad de Granger y cointegración de Engle-Granger. Los resultados confirman que la serie objetivo es no estacionaria en niveles, que la mayoría de las exógenas Granger-causan al objetivo y, lo más relevante, que **la capacidad aérea presenta Granger-causalidad en ambos sentidos** con la demanda, confirmando empíricamente la sospecha de endogeneidad bidireccional ya señalada en el Capítulo 2.
+**Correlaciones en niveles.** La capacidad aérea contemporánea (`seats`) presenta la correlación más alta con el objetivo (r = 0,88 a lag 0), seguida del PIB de los emisores ponderado (r = 0,48 a lag 0) y del PIB alemán (r = 0,37 a lag 0). El resto de regresores macroeconómicos —ratio HICP, tipo de cambio, precio turístico relativo, confianza del consumidor— presentan correlaciones bajas o muy bajas en valor absoluto (todas por debajo de 0,40). Estos valores de niveles **están contaminados por la tendencia secular compartida**: todas las series macroeconómicas tienen una tendencia creciente sostenida desde 2011 que produce correlaciones espurias con la demanda turística, también creciente. Por ello, la inferencia sustantiva debe basarse en el análisis en variaciones interanuales.
 
-> **[ILUSTRACIÓN 4.5 AQUÍ — Heatmap de cross-correlaciones en niveles y variaciones]**
-> *Dos paneles con heatmaps de correlación cruzada para los predictores principales frente a retardos del 0 al 12. Panel izquierdo en niveles, panel derecho en variaciones interanuales. Identifica visualmente los retardos óptimos.*
+**Correlaciones en variaciones interanuales.** Tras eliminar el componente tendencial, el ranking cambia sustancialmente y, sobre todo, emerge una estructura de retardos óptimos no triviales:
+
+- La **capacidad aérea** se mantiene como predictor dominante, pero con un patrón temporal radicalmente distinto: la correlación contemporánea cae a r = 0,30, mientras que el pico se desplaza al **retardo de once meses (r = 0,70)**. Esta es la evidencia empírica más nítida en favor de la decisión metodológica de utilizar `seats_lag6` o retardos largos en lugar de la capacidad contemporánea: las decisiones de programación de capacidad anticipan la demanda con muchos meses de antelación, conforme al horizonte estándar de asignación de slots IATA.
+- El **PIB de los emisores ponderado** mantiene una correlación robusta y estable en torno a r = 0,42–0,55 a lo largo de todos los retardos del 0 al 11, con pico a lag 9 (r = 0,55). Lo mismo se observa, con magnitudes algo inferiores, para el PIB alemán (pico a lag 10 con r = 0,49).
+- El **indicador de confianza del consumidor alemán** confirma su papel teórico de indicador adelantado: la correlación contemporánea es prácticamente nula (r = –0,07) pero crece progresivamente hasta alcanzar su pico en torno a los retardos 7–8 (r = 0,24–0,25), consistente con la intuición de que los hogares deciden y planifican sus viajes varios meses antes de materializarlos.
+- Las variables de **precios y tipos de cambio** (HICP ratio, PLN/EUR, precio turístico relativo) presentan correlaciones lineales débiles en variaciones interanuales (todas con |r| ≤ 0,22). Este hallazgo no implica que no sean relevantes para la demanda, sino que su relación con el objetivo no es bien capturada por una correlación lineal monótona. Esta es una de las motivaciones empíricas que justifican el salto desde modelos econométricos clásicos (lineales por construcción) hacia modelos de aprendizaje automático y aprendizaje profundo, capaces de capturar relaciones no lineales y de interacción entre variables.
+
+El cuaderno NB03 formaliza este análisis exploratorio con tests estadísticos de propiedades de las series. Los tests ADF y KPSS confirman que la serie objetivo es no estacionaria en niveles y se vuelve estacionaria al tomar diferencias estacionales. Los tests de causalidad de Granger detectan relación de precedencia temporal entre la mayoría de los regresores macroeconómicos y la variable objetivo, conforme a la dirección teórica esperada. El hallazgo más relevante de este cuaderno, sin embargo, es la **detección de causalidad de Granger en ambos sentidos entre capacidad aérea y demanda turística**, confirmando de manera argumentada la sospecha de endogeneidad bidireccional ya señalada en el Capítulo 2 y motivando el esquema de cuatro especificaciones del NB06.
+
+# !!CAMBIO nuevos párrafos de argumentación para este apartado.
+
+![ILUSTRACIÓN 4.5 AQUÍ — Heatmap de cross-correlaciones en niveles y variaciones](../documentation_es/figures-memoria/fig_4_5_ccf_heatmaps.png)
+
 
 ## 4.5. Ingeniería de variables y diagnóstico de colinealidad (NB04)
 
@@ -327,10 +336,17 @@ Con estas tres justificaciones, las variables con retardo construidas en este cu
 
 # !!!ANOTACIÓN lags en variables explicado
 
-**Diagnóstico de colinealidad.** Se calcula el Factor de Inflación de la Varianza (VIF) sobre primeras diferencias, que es la métrica relevante cuando las series comparten tendencia secular. El diagnóstico revela tres clusters problemáticos con correlaciones superiores a 0,90, que conducen a decisiones de selección de variables documentadas en una tabla de decisión reproducible (eliminación de `gdp_pc_DE` por redundancia con el agregado ponderado, eliminación del CCI contemporáneo a favor del retardo, etc.).
+# !!CAMBIO Nuevos párrafos para la colinealidad:
 
-> **[ILUSTRACIÓN 4.6 AQUÍ — Tabla de decisión de selección de variables]**
-> *Tabla resumen del NB04 con cada variable candidata, su VIF en primeras diferencias, su correlación crítica más alta y la decisión final (mantener, eliminar o condicional).*
+**Diagnóstico de colinealidad.** Se calcula el Factor de Inflación de la Varianza (VIF) sobre primeras diferencias, que es la métrica relevante cuando las series comparten tendencia secular y la versión en niveles produciría valores artificialmente inflados. El diagnóstico identifica dos grupos de variables con problemas de colinealidad:
+
+- **Colinealidad severa (VIF > 20):** `gdp_pc_origins_wavg` (VIF = 23,97) y `gdp_pc_DE` (VIF = 22,86) presentan colinealidad mutua importante, consecuencia de que Alemania pesa cerca del 20 % en el agregado ponderado y por tanto ambas variables comparten una porción sustancial de su variación. La correlación bivariada directa entre ambas es del 0,95.
+
+- **Colinealidad moderada (5 < VIF < 10):** `relprice_wavg` (VIF = 9,14) y `exr_pln` (VIF = 8,97) presentan colinealidad moderada con el resto del bloque de precios y tipos de cambio, derivada de que ambas comparten dinámica con el ratio HICP a través del tipo de cambio bilateral.
+
+Estas detecciones, junto con la endogeneidad bidireccional de la capacidad aérea documentada en el NB03, se sintetizan en una **tabla de decisión reproducible** (Ilustración 4.6) que asigna a cada variable candidata una de tres acciones. Las acciones DROP por endogeneidad afectan a `seats` contemporáneo y a `nights_lag1`: ambas son altamente predictivas (r = 0,88 con el objetivo) pero su uso como predictores produciría modelos académicamente informativos y operativamente irrealizables, conforme a la distinción articulada en la Sección 4.6. Las acciones CHECK afectan a las cuatro variables con VIF > 5: no se eliminan a priori, sino que se evalúan empíricamente por especificación en el NB06 mediante el esquema de cuatro modelos de complejidad decreciente (M1 a M4), que cuantifica cuánta precisión predictiva se pierde al restringir progresivamente la información colineal. Las acciones KEEP afectan al resto de variables del *feature set*, incluidos los retardos seriales no endógenos (`nights_lag12`, `cci_DE_lag2`, `seats_lag6`) y las dos dummies COVID.
+
+![ILUSTRACIÓN 4.6 AQUÍ — Tabla de decisión de selección de variables](../documentation_es/figures-memoria/fig_4_6_variable_selection.png)
 
 A modo ilustrativo del estilo de código empleado a lo largo del trabajo, se reproduce a continuación el fragmento de NB04 que implementa el encadenamiento estadístico del HICP del Reino Unido, una de las operaciones técnicamente más delicadas del *pipeline* de datos. El código completo se encuentra disponible en el repositorio del proyecto.
 
@@ -385,12 +401,11 @@ Los resultados se resumen en la Tabla 5.1.
 
 Dos hallazgos merecen comentario detallado.
 
-**El "éxito" aparente de Holt-Winters es una solución numéricamente degenerada.** Su MAPE del 3,9 % supera ampliamente al de los demás modelos, pero la inspección de los parámetros optimizados revela una configuración: $\alpha = 1$ (el modelo prácticamente ignora la media móvil del nivel y usa el último valor observado), $\beta = 0$ (sin componente de tendencia) y $\gamma = 0$ (sin componente estacional). Esta configuración equivale a un modelo altamente reactivo al último dato disponible, que produce predicciones precisas en períodos estables pero colapsa completamente ante cambios estructurales. No constituye un resultado robusto y se reporta con esa advertencia explícita.
+**El "éxito" aparente de Holt-Winters es una solución numéricamente degenerada.** Su MAPE del 3,9 % supera ampliamente al de los demás modelos, pero la inspección de los parámetros optimizados revela una configuración degenerada: $\alpha = 1$ (el modelo prácticamente ignora la media móvil del nivel y usa el último valor observado), $\beta = 0$ (sin componente de tendencia) y $\gamma = 0$ (sin componente estacional). Esta configuración equivale a un modelo altamente reactivo al último dato disponible, que produce predicciones precisas en períodos estables pero colapsa completamente ante cambios estructurales. No constituye un resultado robusto y se reporta con esa advertencia explícita.
 
 **El SARIMAX pierde marginalmente contra el SARIMA univariante.** Este hallazgo es contraintuitivo pero empíricamente robusto: incorporar las variables exógenas al SARIMA no mejora su precisión, sino que la empeora ligeramente (MAPE 6,6 % frente a 6,0 %). La interpretación, consistente con Gunter y Smeral (2016) y validada por el tutor, es que en modelos lineales los retardos autorregresivos ya absorben la variación sistemática que las exógenas podrían explicar. Añadirlas en una estructura lineal saturada introduce ruido de estimación sin ganancia informacional. Este hallazgo motiva conceptualmente el salto a modelos no lineales en los cuadernos siguientes.
 
-> **[ILUSTRACIÓN 5.1 AQUÍ — Predicciones de los baselines en el hold-out]**
-> *Líneas comparativas sobre el período de test: serie observada en negro, predicciones de los cuatro baselines superpuestas. Permite contrastar visualmente la capacidad de cada modelo para capturar nivel y estacionalidad.*
+![ILUSTRACIÓN 5.1 AQUÍ — Predicciones de los baselines en el hold-out](../documentation_es/figures-memoria/fig_5_1_baselines_holdout.png)
 
 ## 5.2. Modelos de aprendizaje automático con cuatro especificaciones (NB06)
 
@@ -509,8 +524,7 @@ El cuaderno NB08 utiliza el LSTM seleccionado en NB07 para producir predicciones
 
 Los tres escenarios se construyen ajustando la trayectoria anual de crecimiento del PIB de los mercados emisores publicada por el FMI en abril de 2025. El escenario Tendencial utiliza el baseline sin modificar. Los escenarios Optimista y Pesimista aplican shifts compuestos de +2 puntos porcentuales y –2 puntos porcentuales respectivamente, a partir de 2026. La amplitud de ±2pp se sitúa dentro del rango de volatilidad macroeconómica histórica observable —la crisis financiera de 2008–2009 representó aproximadamente ±4 puntos sobre el crecimiento anual— y resulta visible en las predicciones del benchmark de elasticidad, aunque, como se discute más adelante, no del LSTM.
 
-> **[ILUSTRACIÓN 5.5 AQUÍ — Trayectorias de PIB per cápita de los emisores bajo los tres escenarios]**
-> *Una línea negra para el histórico observado y tres líneas de colores para los escenarios Tendencial, Optimista y Pesimista a lo largo del horizonte de predicción.*
+![ILUSTRACIÓN 5.5 AQUÍ — Trayectorias de PIB per cápita de los emisores bajo los tres escenarios](../figures/scenarios/08_01_scenario_gdp_paths.png)
 
 ### 5.4.2. Predicción central del LSTM y el problema de la insensibilidad a escenarios
 
@@ -524,8 +538,7 @@ Para introducir sensibilidad genuina a los escenarios, el cuaderno aplica un ben
 
 **Los dos métodos son complementarios, no sustitutivos.** El LSTM proporciona la **mejor estimación central**, calibrada empíricamente sobre el panel completo de Polonia y con una precisión histórica del orden del 3-5 %. El benchmark de elasticidad proporciona la **mejor estimación de sensibilidad estructural**, calibrada con una elasticidad media de la literatura mundial. La forma operativa de utilizarlos conjuntamente es: la predicción central del LSTM como punto puntual esperado, y el envelope del benchmark como banda de incertidumbre estructural ante variaciones del escenario macroeconómico. En niveles absolutos los dos métodos convergen dentro del 7-15 %, lo que constituye el principal sanity check de todo el análisis prospectivo.
 
-> **[ILUSTRACIÓN 5.6 AQUÍ — Predicción combinada LSTM + benchmark de elasticidad]**
-> *Una sola figura headline con el histórico observado, la predicción central del LSTM y las tres trayectorias del benchmark de elasticidad bajo los escenarios Tendencial, Optimista y Pesimista, todo sobre el horizonte 2025-2026.*
+![ILUSTRACIÓN 5.6 AQUÍ — Predicción combinada LSTM + benchmark de elasticidad](../figures/scenarios/08_02_combined_forecast.png)
 
 ### 5.4.4. Análisis causal del COVID-19
 
@@ -549,7 +562,7 @@ El **Modelo B** es un XGBoost no lineal con siete features retardadas, diseñado
 
 ### 5.5.2. Resultados y la lección honesta
 
-Los MAPE sobre el hold-out son: **Naive seasonal 1,82 %, Modelo A 2,01 %, Modelo B (XGBoost) 1,77 %**. La diferencia entre los tres es marginal. El modelo macroeconómico apenas mejora el benchmark naive, y el XGBoost flexible solo gana por cinco centésimas. La fórmula del Modelo A produce un coeficiente del PIB de aproximadamente 1,57 con un intervalo de confianza amplio (significación marginal, p ≈ 0,05) y un R² de solo 0,074.
+Los MAPE sobre el hold-out, ordenados de menor a mayor, son: Modelo B (XGBoost) 1,77 %, Naive estacional 1,82 % y Modelo A (OLS) 2,01 %. La diferencia entre los tres es marginal: apenas 0,24 puntos porcentuales de MAPE separan al mejor del peor. Tres hechos merecen atención. Primero, el XGBoost flexible supera al Naive por solo 0,05 puntos porcentuales: el modelo más sofisticado del análisis apenas justifica su complejidad frente al benchmark trivial. Segundo, el Modelo A —la regresión OLS interpretable con un único regresor macroeconómico— es estrictamente peor que el Naive sobre el hold-out, lo que confirma que el PIB ponderado retardado no añade información predictiva sustantiva sobre la inercia estacional capturada por construcción en la formulación interanual. Tercero, la fórmula del Modelo A produce un coeficiente del PIB de aproximadamente 1,57 con un intervalo de confianza amplio (significación marginal, p ≈ 0,05) y un R² de solo 0,074, valores que confirman la débil capacidad explicativa lineal de la variable macroeconómica sobre la dinámica de la capacidad aérea.
 
 **La lectura honesta de estos resultados** es que la mayor parte de la varianza del crecimiento interanual de la capacidad se explica por la inercia del propio ciclo de planificación (el ancla `seats[t-12]` está implícita en la formulación interanual), no por la dinámica macroeconómica contemporánea o retardada. Esto no invalida el modelo: lo recoloca conceptualmente. El valor del NB09 no está en la precisión predictiva —donde el naive es prácticamente equivalente— sino en que permite **predicciones condicionadas a escenarios macroeconómicos**, lo que el naive no puede hacer. Una aerolínea que quiera evaluar cómo afectaría una recesión en sus mercados emisores a su política de capacidad puede hacerlo con el Modelo A; el naive sólo extrapola tendencia.
 
@@ -569,8 +582,7 @@ $$
 
 donde $\Delta\log\text{GDP}_\text{orig}(t-12)$ representa la log-diferencia interanual del PIB ponderado de los mercados emisores doce meses antes. **La predicción no es una explicación causal** y debe usarse como instrumento de simulación de escenarios, no como afirmación sobre los determinantes estructurales de la capacidad aérea.
 
-> **[ILUSTRACIÓN 5.8 AQUÍ — Modelo de capacidad: predicción, observado y benchmark]**
-> *Serie histórica de asientos ofertados, predicción del Modelo A sobre el hold-out, predicción del Modelo B y benchmark naive, junto con el horizonte prospectivo bajo los escenarios del FMI.*
+![ILUSTRACIÓN 5.8 AQUÍ — Modelo de capacidad: predicción, observado y benchmark](../figures/models/09_06_seats_model_comparison_holdout.png)
 
 ## 5.6. Síntesis comparativa final
 
@@ -761,32 +773,34 @@ WTTC (2025). *Travel & Tourism Economic Impact 2025*. World Travel & Tourism Cou
 
 ### Fuentes de datos primarias
 
-Eurostat. `tour_occ_nights`: Nights spent at tourist accommodation establishments — monthly data. https://ec.europa.eu/eurostat/
+Eurostat. `tour_occ_nights`: Nights spent at tourist accommodation establishments — monthly data. https://ec.europa.eu/eurostat/databrowser/view/tour_occ_nim/default/table
 
-Eurostat. `tour_cap_nat`: Tourism infrastructure capacity at national level. https://ec.europa.eu/eurostat/
 
-Eurostat. `tour_lfsq6r2`: Employment in the tourism industries. https://ec.europa.eu/eurostat/
+Eurostat. `tour_cap_nat`: Tourism infrastructure capacity at national level. https://ec.europa.eu/eurostat/databrowser/view/tour_cap_nats/default/table?lang=en
 
-Eurostat. `avia_paoc`: Air passenger transport between reporting countries — monthly data. https://ec.europa.eu/eurostat/
+Eurostat. `tour_lfsq6r2`: Employment in the tourism industries. https://ec.europa.eu/eurostat/databrowser/view/tour_lfsq6r2/default/table?lang=en
 
-Eurostat. `avia_tf_aca`: Air transport of passengers, seats and flights — Poland, monthly data. https://ec.europa.eu/eurostat/
+Eurostat. `avia_paoc`: Air passenger transport between reporting countries — monthly data. https://ec.europa.eu/eurostat/databrowser/view/avia_paoc__custom_20358287/default/table
 
-Eurostat. `avia_tf_apal`: Air passenger transport by reporting airport, Poland. https://ec.europa.eu/eurostat/
+Eurostat. `avia_tf_aca`: Air transport of passengers, seats and flights — Poland, monthly data. https://ec.europa.eu/eurostat/databrowser/view/avia_tf_aca/default/table?lang=en
 
-Eurostat. `prc_hicp_midx`: Harmonised Index of Consumer Prices — monthly data, 2015=100. https://ec.europa.eu/eurostat/
+Eurostat. `avia_tf_apal`: Air passenger transport by reporting airport, Poland. https://ec.europa.eu/eurostat/databrowser/view/avia_tf_apal__custom_20358308/default/table
 
-Eurostat. `prc_hicp_aind`: HICP — annual data, specific inflation series. https://ec.europa.eu/eurostat/
 
-Eurostat. `prc_ppp_ind`: Price level indices — Purchasing Power Parities. https://ec.europa.eu/eurostat/
+Eurostat. `prc_hicp_midx`: Harmonised Index of Consumer Prices — monthly data, 2015=100. https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr__custom_21540143/bookmark/table?lang=en&bookmarkId=60ebcdf2-9eb8-4901-b98e-46b62b318ea4&c=1779283184000
 
-Eurostat. `ert_bil_eur_m`: Euro/ECU exchange rates — bilateral, monthly (EUR/PLN, EUR/USD). https://ec.europa.eu/eurostat/
+Eurostat. `prc_hicp_aind`: HICP — annual data, specific inflation series. https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_aind__custom_20358090/default/table
+
+Eurostat. `prc_ppp_ind`: Price level indices — Purchasing Power Parities. https://ec.europa.eu/eurostat/databrowser/view/prc_ppp_ind/default/table?lang=en
+
+Eurostat. `ert_bil_eur_m`: Euro/ECU exchange rates — bilateral, monthly (EUR/PLN, EUR/USD). https://ec.europa.eu/eurostat/databrowser/view/ert_bil_eur_m__custom_20357228/default/table
 
 Eurostat. `namq_10_gdp`: GDP and main components — quarterly data, both current prices (market prices) and real GDP (CLV-2010). https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc__custom_20251885/default/table
 
 
-Eurostat. `demo_pjan`: Population on 1 January by age and sex. https://ec.europa.eu/eurostat/
+Eurostat. `demo_pjan`: Population on 1 January by age and sex. https://ec.europa.eu/eurostat/databrowser/view/demo_pjan__custom_20338176/default/table
 
-Eurostat. `ei_bsco_m`: Consumer confidence indicator — monthly data. https://ec.europa.eu/eurostat/
+Eurostat. `ei_bsco_m`: Consumer confidence indicator — monthly data. https://ec.europa.eu/eurostat/databrowser/view/ei_bsco_m__custom_20356869/default/table
 
 Office for National Statistics (ONS). Series D7BT (HICP CPIH), ABMI (GDP at constant prices) and UKPOP (population estimates). https://www.ons.gov.uk/
 
