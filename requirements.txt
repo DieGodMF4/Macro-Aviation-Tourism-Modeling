@@ -1,0 +1,43 @@
+# ============================================================
+# Macro-Aviation-Tourism Modelling — Python dependencies
+# ============================================================
+# Python 3.10+ recommended (TensorFlow does not support 3.12
+# on Windows native; use WSL2 if on Windows).
+
+# --- Core scientific stack ---
+numpy>=1.24,<2.0
+pandas>=2.0,<3.0
+scipy>=1.10
+python-dateutil>=2.8
+
+# --- Visualisation ---
+matplotlib>=3.7
+seaborn>=0.12
+
+# --- Classical statistics and time-series econometrics ---
+statsmodels>=0.14
+
+# --- Machine Learning ---
+scikit-learn>=1.3
+xgboost>=2.0
+scikit-optimize>=0.9   # used for hyperparameter tuning in NB06
+
+# --- Deep Learning ---
+tensorflow>=2.13,<2.16
+keras>=2.13            # bundled with tensorflow but pinned for clarity
+
+# --- Bayesian causal analysis ---
+pycausalimpact>=0.1.1  # used in NB08 for COVID-19 causal analysis
+
+# --- File I/O ---
+openpyxl>=3.1          # for reading .xlsx files (IMF WEO, UN Tourism)
+xlrd>=2.0              # for legacy .xls files
+chardet>=5.1           # encoding detection for IMF WEO (UTF-16 LE)
+
+# --- Jupyter environment ---
+jupyterlab>=4.0
+ipykernel>=6.25
+notebook>=7.0          # for backwards compatibility with classic notebooks
+
+# --- Optional: progress bars and code quality ---
+tqdm>=4.65             # progress bars in long backtests
