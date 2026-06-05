@@ -250,6 +250,7 @@ El proyecto se desarrolla bajo el estándar metodológico **CRISP-DM** (*Cross-I
 > **[ILUSTRACIÓN 4.1 AQUÍ — Diagrama CRISP-DM adaptado al TFG, con los nueve cuadernos]**
 > *Diagrama del proceso CRISP-DM con sus seis fases mapeadas a los nueve cuadernos Jupyter. Comprensión del negocio → revisión bibliográfica y NB00; Comprensión de los datos → NB01–NB03; Preparación de los datos → NB04; Modelado → NB05–NB07 y NB09; Evaluación → integrada en NB05–NB09; Despliegue → NB08 y NB09.*
 
+
 Las seis fases del estándar se adaptan al presente trabajo como sigue. La **comprensión del negocio** queda cubierta por la revisión bibliográfica del Capítulo 2 y la definición de los objetivos. La **comprensión de los datos** se implementa en los cuadernos NB00 a NB03, que cubren la carga e inspección estructural, el análisis exploratorio univariante y multivariante y los tests estadísticos formales. La **preparación de los datos** se concentra en el cuaderno NB04, que realiza la interpolación temporal de series de frecuencia inferior, el encadenamiento estadístico de series británicas, la construcción de variables derivadas y el diagnóstico de colinealidad. El **modelado** abarca los cuadernos NB05 (baselines clásicos), NB06 (aprendizaje automático), NB07 (LSTM) y NB09 (modelo aplicado de capacidad aérea). La **evaluación** es transversal a todos los cuadernos de modelado y se consolida en el Capítulo 5. Finalmente, el **despliegue** se materializa en el cuaderno NB08, que integra los modelos en un pipeline prospectivo alimentado por proyecciones del FMI, y en el componente operativo del NB09.
 
 ### 4.1.2. Workflow del trabajo
@@ -305,7 +306,7 @@ El cuaderno NB01 caracteriza la variable objetivo mediante visualización tempor
 
 ## 4.4. Análisis exploratorio multivariante y diagnóstico estadístico (NB02–NB03)
 
-El cuaderno NB02 examina las relaciones entre la variable objetivo y los regresores candidatos mediante matrices de correlación y funciones de correlación cruzada (CCF) a retardos del 0 al 12 meses, contrastando los resultados obtenidos en niveles absolutos frente a los obtenidos en variaciones interanuales (YoY). El contraste entre ambas representaciones resulta extraordinariamente revelador y orienta el resto de decisiones metodológicas del trabajo.
+El cuaderno NB02 examina las relaciones entre la variable objetivo y los regresores candidatos mediante matrices de correlación y funciones de correlación cruzada (CCF) a retardos de 0 a 12 meses, contrastando los resultados obtenidos en niveles absolutos frente a los obtenidos en variaciones interanuales (YoY). El contraste entre ambas representaciones resulta extraordinariamente revelador y orienta el resto de decisiones metodológicas del trabajo.
 
 **Correlaciones en niveles.** La capacidad aérea contemporánea (`seats`) presenta la correlación más alta con el objetivo (r = 0,88 a lag 0), seguida del PIB de los emisores ponderado (r = 0,48 a lag 0) y del PIB alemán (r = 0,37 a lag 0). El resto de regresores macroeconómicos —ratio HICP, tipo de cambio, precio turístico relativo, confianza del consumidor— presentan correlaciones bajas o muy bajas en valor absoluto (todas por debajo de 0,40). Estos valores de niveles **están contaminados por la tendencia secular compartida**: todas las series macroeconómicas tienen una tendencia creciente sostenida desde 2011 que produce correlaciones espurias con la demanda turística, también creciente. Por ello, la inferencia sustantiva debe basarse en el análisis en variaciones interanuales.
 
@@ -522,7 +523,7 @@ El cuaderno NB08 utiliza el LSTM seleccionado en NB07 para producir predicciones
 
 ### 5.4.1. Construcción de los tres escenarios
 
-Los tres escenarios se construyen ajustando la trayectoria anual de crecimiento del PIB de los mercados emisores publicada por el FMI en abril de 2025. El escenario Tendencial utiliza el baseline sin modificar. Los escenarios Optimista y Pesimista aplican shifts compuestos de +2 puntos porcentuales y –2 puntos porcentuales respectivamente, a partir de 2026. La amplitud de ±2pp se sitúa dentro del rango de volatilidad macroeconómica histórica observable —la crisis financiera de 2008–2009 representó aproximadamente ±4 puntos sobre el crecimiento anual— y resulta visible en las predicciones del benchmark de elasticidad, aunque, como se discute más adelante, no del LSTM.
+Los tres escenarios se construyen ajustando la trayectoria anual de crecimiento del PIB de los mercados emisores publicada por el FMI en abril de 2025 (IMF, 2025). El escenario Tendencial utiliza el baseline sin modificar. Los escenarios Optimista y Pesimista aplican shifts compuestos de +2 puntos porcentuales y –2 puntos porcentuales respectivamente, a partir de 2026. La amplitud de ±2pp se sitúa dentro del rango de volatilidad macroeconómica histórica observable —la crisis financiera de 2008–2009 representó aproximadamente ±4 puntos sobre el crecimiento anual— y resulta visible en las predicciones del benchmark de elasticidad, aunque, como se discute más adelante, no del LSTM.
 
 ![ILUSTRACIÓN 5.5 AQUÍ — Trayectorias de PIB per cápita de los emisores bajo los tres escenarios](../figures/scenarios/08_01_scenario_gdp_paths.png)
 
@@ -880,3 +881,31 @@ Our World in Data. GDP by world regions — stacked-area dataset (compiled from 
 **XGBoost (eXtreme Gradient Boosting).** Algoritmo de aprendizaje automático basado en *gradient boosting* sobre árboles de decisión, optimizado para velocidad y rendimiento.
 
 **YoY (Year-on-Year).** Variación interanual, calculada como diferencia o ratio entre el valor del período actual y el valor doce meses antes.
+
+### Tabla A.1 — Acrónimos de variables empleadas en el panel
+
+| Acrónimo | Descripción |
+|---|---|
+| `nights` | Pernoctaciones mensuales de turistas extranjeros en Polonia. Variable objetivo del trabajo. |
+| `nights_lag1` | Pernoctaciones observadas un mes antes (retardo autorregresivo de corto plazo). |
+| `nights_lag12` | Pernoctaciones observadas doce meses antes (retardo estacional). |
+| `nights_yoy` | Crecimiento interanual de las pernoctaciones, definido como `nights[t] / nights[t-12]`. Objetivo del LSTM en la formulación V2. |
+| `seats` | Asientos totales disponibles mensuales en aeropuertos polacos. |
+| `seats_lag6` | Asientos disponibles seis meses antes; predeterminado por el horizonte estándar de asignación de slots IATA. |
+| `gdp_origins_wavg` | PIB real trimestral interpolado mensualmente, ponderado por la cuota de pasajeros de los nueve mercados emisores. |
+| `gdp_pc_origins_wavg` | PIB real per cápita ponderado de los mercados emisores. |
+| `gdp_origins_lag3` | PIB ponderado de los emisores con retardo de tres meses (alineado con el pico de correlación cruzada). |
+| `gdp_DE` | PIB real de Alemania, mercado emisor con mayor cuota. |
+| `gdp_pc_DE` | PIB real per cápita de Alemania. |
+| `pop_origins_wavg` | Población ponderada de los mercados emisores. |
+| `hicp_PL` | Índice Armonizado de Precios al Consumo de Polonia (base 2015 = 100). |
+| `hicp_origins_wavg` | HICP medio ponderado de los mercados emisores. |
+| `hicp_ratio` | Ratio entre `hicp_PL` y `hicp_origins_wavg`. Indica el coste de vida relativo entre destino y origen. |
+| `relprice_wavg` | Precio turístico relativo según Song et al. (2010), que combina HICP y tipos de cambio. |
+| `exr_pln` | Tipo de cambio bilateral euro/złoty polaco (EUR/PLN). |
+| `cci_DE` | Indicador de Confianza del Consumidor alemán publicado por la Comisión Europea. |
+| `cci_DE_lag2` | CCI alemán con retardo de dos meses. |
+| `covid_strong` | Variable ficticia que toma valor 1 entre marzo de 2020 y diciembre de 2021. Captura la fase aguda del shock pandémico. |
+| `covid_post` | Variable ficticia que toma valor 1 desde enero de 2022. Captura el desplazamiento de nivel post-pandémico. |
+| `month_01`, ..., `month_12` | Variables ficticias estacionales, una por cada mes del año. Toman valor 1 si la observación pertenece al mes correspondiente. |
+| `trend` | Variable de tendencia lineal incremental, igual al número de meses transcurridos desde el origen del panel. |
