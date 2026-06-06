@@ -22,8 +22,6 @@ Este Trabajo de Fin de Grado modeliza y predice la demanda turística internacio
 
 **Palabras clave:** demanda turística, predicción de series temporales, Polonia, LSTM, SARIMAX, XGBoost, estadística bayesiana, Eurostat, conectividad aérea, COVID-19, escenarios FMI.
 
-# !!!ANOTACIÓN CLAVE: RESUMEN CAMBIADO 
-> Es un poco más largo, no sé si hay un límite claro que no se pueda pasar. En la entrega del resumen José Daniel señaló que un máximo de 120 palabras, pero era orientativo y podía cambiarse.
 
 ---
 
@@ -39,14 +37,11 @@ This Bachelor's Thesis models and forecasts international tourism demand in Pola
 
 ## 1.1. El turismo internacional como fenómeno socioeconómico
 
-El turismo internacional constituye uno de los sectores económicos más relevantes a escala global. Según el Barómetro Mundial del Turismo de la Organización Mundial del Turismo de Naciones Unidas, las llegadas internacionales alcanzaron los 1.400 millones en 2024, recuperando de forma prácticamente completa los niveles previos a la pandemia de COVID-19. El Consejo Mundial de Viajes y Turismo estimó que la contribución total del sector al Producto Interior Bruto mundial fue de 10,9 billones de dólares en 2024 — en torno al 10 % de la economía global — sosteniendo 357 millones de empleos directos e indirectos. En el ámbito europeo, el turismo aportó cerca de 1,8 billones de euros al PIB de la Unión Europea, consolidándose como uno de los motores estructurales del continente (WTTC Travel & Tourism Economic Impact, 2025).
-
-# !!!ANOTACIÓN 1: Fuente añadida y gráfico mejorado
-
+El turismo internacional constituye uno de los sectores económicos más relevantes a escala global. Según el Barómetro Mundial del Turismo de la Organización Mundial del Turismo de Naciones Unidas, las llegadas internacionales alcanzaron los 1.400 millones en 2024, recuperando de forma prácticamente completa los niveles previos a la pandemia de COVID-19. El Consejo Mundial de Viajes y Turismo estimó que la contribución total del sector al Producto Interior Bruto mundial fue de 10,9 billones de dólares en 2024 — en torno al 10 % de la economía global — sosteniendo 357 millones de empleos directos e indirectos. En el ámbito europeo, el turismo aportó cerca de 1,8 billones de euros al PIB de la Unión Europea, consolidándose como uno de los motores estructurales del continente (WTTC, 2025).
 
 
 ![ILUSTRACIÓN 1.1 — Contribución del sector turístico al PIB por país europeo](../documentation_es/figures-memoria/fig_1_1_tourism_gdp_share.png)
-
+> Ilustración 1.1. Contribución del turismo al PIB en países europeos seleccionados, 2024. Fuente: WTTC (2025).
 
 
 La heterogeneidad que muestra la Ilustración 1.1 refleja la diversidad estructural del turismo europeo: conviven economías intensivas en turismo — donde el sector supera el 20 % del PIB — con economías emergentes en las que el turismo representa todavía una fracción moderada de la actividad agregada. Polonia se inscribe en este segundo grupo, con un margen de crecimiento aún considerable que la hace especialmente interesante desde la perspectiva de la predicción y la planificación estratégica.
@@ -59,21 +54,18 @@ La literatura económica sitúa al turismo internacional como un bien de lujo: e
 
 Esta volatilidad quedó dramáticamente expuesta durante la pandemia de COVID-19, el mayor colapso conocido en la historia moderna del turismo internacional. Según Eurostat, las pernoctaciones de turistas extranjeros en la Unión Europea se desplomaron alrededor de un 85 % en abril de 2020 respecto al mismo mes del año anterior, y la serie tardó aproximadamente 28 meses en recuperar los niveles previos (Eurostat: `tour_occ_nights`, 2025). Este episodio reforzó la necesidad de herramientas predictivas robustas, capaces de integrar no solo la dinámica temporal endógena del sector sino también los determinantes macroeconómicos, demográficos y de conectividad que condicionan los flujos turísticos.
 
-# !!!ANOTACIÓN 2: fuentes añadidas (verificar formato correcto?)
-
-# !!CAMBIO 2.
 
 ## 1.3. Polonia como caso de estudio
 
 Este trabajo toma como caso de estudio el turismo internacional en Polonia, una elección que responde a varios factores convergentes. Desde su adhesión a la Unión Europea el 1 de mayo de 2004, Polonia ha experimentado una transformación económica y estructural sin precedentes en la Europa reciente. Su PIB real per cápita, medido en volúmenes encadenados con referencia 2010, se duplicó holgadamente en el período 2004–2024, pasando de aproximadamente 7.300 EUR a 15.750 EUR por habitante (un crecimiento de un factor 2,16)(Eurostat: `namq_10_gdp` for nominal GDP at market prices, 2025); (Eurostat: `demo_pjan`, 2025). Su nivel de precios, medido por el Índice de Precios al Consumo Armonizado, permanece notablemente por debajo de la media comunitaria, manteniendo una ventaja competitiva considerable en paridad de poder adquisitivo de cara a los visitantes extranjeros.
 
 > ![ILUSTRACIÓN 1.2: Crecimiento paralelo de la conectividad aérea y del PIB real per cápita de Polonia, 2004–2024](../documentation_es/figures-memoria/fig_1_2_pax_gdp_poland.png)
+> Ilustración 1.2. Crecimiento paralelo del tráfico aéreo y del PIB real per cápita de Polonia, 2004–2024.
 
 La Ilustración 1.2 sintetiza la narrativa macroeconómica central del trabajo: la transformación económica de Polonia ha ido acompañada de una expansión espectacular de la conectividad aérea. En el mismo período en que su PIB real per cápita se duplicaba, el número de pasajeros en aeropuertos polacos pasó de 6,1 millones en 2004 a 58,9 millones en 2024, un crecimiento de prácticamente un factor diez. Ambas curvas crecen de forma paralela y se ven afectadas simultáneamente por el shock de la pandemia en 2020, lo que sugiere una vinculación estructural entre el desempeño macroeconómico y la dinámica de la conectividad aérea que el trabajo se propone modelizar formalmente. Esta expansión ha sido impulsada en gran medida por la penetración masiva de las aerolíneas de bajo coste, particularmente Ryanair y Wizz Air, que han transformado la estructura del mercado aéreo polaco abriendo rutas directas con prácticamente todos los grandes mercados emisores de Europa Occidental.
 
 En 2024, Polonia registró la segunda tasa de crecimiento turístico más alta de toda la Unión Europea —solo superada por Malta— con un incremento interanual cercano al 6 % en pernoctaciones internacionales. La combinación de dinamismo económico, competitividad en precios, expansión de la conectividad aérea y crecimiento turístico sostenido convierte a Polonia en un laboratorio idóneo para el análisis cuantitativo de la interacción entre variables macroeconómicas, conectividad aérea y demanda turística.
 
-# !!CAMBIO 2.
 
 ## 1.4. Objetivo general y orientación dual del trabajo
 
@@ -110,17 +102,19 @@ El cuarto bloque, menos frecuente en la literatura clásica pero central en el p
 
 ### 2.1.2. La evolución de las aerolíneas de bajo coste en Polonia
 
-El crecimiento turístico polaco no puede desligarse de la transformación estructural de su mercado aéreo, dominado progresivamente por las aerolíneas de bajo coste (*Low-Cost Carriers*, LCC). Estas pasaron de representar menos del 5 % del mercado polaco en 2004 a más del 52 % en 2015 (Huderek-Glapska y Nowak, 2016), y han seguido ganando cuota hasta superar el 59 % en 2023. Este fenómeno resulta de la combinación de una demanda latente considerable en las diásporas polacas en Europa Occidental —particularmente en el Reino Unido, Alemania y los Países Bajos tras las grandes olas migratorias posteriores a 2004— y de una estrategia agresiva de expansión por parte de Ryanair y Wizz Air, que establecieron bases operativas en Varsovia, Cracovia, Gdańsk y Katowice.
+El crecimiento turístico polaco no puede desligarse de la transformación estructural de su mercado aéreo, dominado progresivamente por las aerolíneas de bajo coste (*Low-Cost Carriers*, LCC). Estas pasaron de representar menos del 5 % del mercado polaco en 2004 a más del 52 % en 2015 (Huderek-Glapska y Nowak, 2016), y han seguido ganando cuota hasta superar el 59 % en 2023. Este fenómeno resulta de la combinación de una demanda latente considerable en las diásporas polacas en Europa Occidental —particularmente en el Reino Unido, Alemania y los Países Bajos tras las grandes olas migratorias posteriores a 2004— y de una estrategia agresiva de expansión por parte de Ryanair y Wizz Air, que establecieron bases operativas en Varsovia, Cracovia, Gdańsk y Katowice. En la Ilustración 2.1 se muestra la composición del tráfico aéreo a Polonia desglosada por los nueve principales mercados emisores, donde España, Alemania y el Reino Unido aparecen claramente como los tres mayores con cuotas en torno al 19–20 % cada uno.
 
 ![ILUSTRACIÓN 2.1 AQUÍ — Tráfico aéreo en Polonia y penetración de LCC, y composición por mercado emisor](../documentation_es/figures-memoria/fig_2_1_origin_country_traffic.png)
+> Ilustración 2.1. Tráfico aéreo hacia Polonia por país de origen: volúmenes totales (Panel A) y cuotas de mercado (Panel B).
 
 ### 2.1.3. Pernoctaciones de turistas extranjeros como variable objetivo
 
-La variable objetivo del trabajo son las pernoctaciones mensuales de turistas extranjeros en establecimientos de alojamiento turístico en Polonia, registradas por Eurostat en el conjunto `tour_occ_nim` conforme al Reglamento (UE) 692/2011 sobre estadísticas europeas de turismo. La elección responde a tres consideraciones. En primer lugar, las pernoctaciones son una medida directa del impacto económico del turismo en el destino, superior a métricas alternativas como las llegadas (que no recogen la duración de la estancia) o los ingresos (sujetos a problemas de registro y armonización entre países). En segundo lugar, la frecuencia mensual permite capturar la dinámica estacional fina y la sensibilidad de corto plazo, a diferencia de las series anuales habituales, que no pueden llegar a ser lo suficientemente precisas. En tercer lugar, la armonización europea del Reglamento 692/2011 garantiza la comparabilidad y robustez de los datos.
-
-Una limitación relevante del conjunto `tour_occ_nim` condiciona el diseño del trabajo y es necesario documentarlo de forma explícita: la variable de país de residencia solo distingue tres categorías agregadas: residentes nacionales, extranjeros y total; por lo que no proporciona desglose por país de origen. El trabajo modela, por tanto, la serie agregada de pernoctaciones extranjeras, e incorpora la dimensión de los mercados emisores a través de las variables exógenas medidas en cada país de origen, ponderadas por las cuotas de pasajeros aéreos derivadas del conjunto `avia_paoc`.
+La variable objetivo del trabajo son las pernoctaciones mensuales de turistas extranjeros en establecimientos de alojamiento turístico en Polonia, registradas por Eurostat en el conjunto `tour_occ_nim` conforme al Reglamento (UE) 692/2011 sobre estadísticas europeas de turismo. La elección responde a tres consideraciones. En primer lugar, las pernoctaciones son una medida directa del impacto económico del turismo en el destino, superior a métricas alternativas como las llegadas (que no recogen la duración de la estancia) o los ingresos (sujetos a problemas de registro y armonización entre países). En segundo lugar, la frecuencia mensual permite capturar la dinámica estacional fina y la sensibilidad de corto plazo, a diferencia de las series anuales habituales, que no pueden llegar a ser lo suficientemente precisas. En tercer lugar, la armonización europea del Reglamento 692/2011 garantiza la comparabilidad y robustez de los datos. En la Ilustración 2.2 podemos observar estas pernoctaciones mensuales de turistas extranjeros en Polonia, destacando los sucesos más relevantes de los últimos años. 
 
 ![ILUSTRACIÓN 2.2 AQUÍ — Evolución de las pernoctaciones de extranjeros en Polonia, 2011-2025](../documentation_es/figures-memoria/fig_2_2_nights_overview.png)
+> Ilustración 2.2. Pernoctaciones mensuales de turistas extranjeros en Polonia, 2011–2025, con hitos pre-pandemia, valle COVID-19 y pico post-pandemia.
+
+Una limitación relevante del conjunto `tour_occ_nim` condiciona el diseño del trabajo y es necesario documentarlo de forma explícita: la variable de país de residencia solo distingue tres categorías agregadas: residentes nacionales, extranjeros y total; por lo que no proporciona desglose por país de origen. El trabajo modela, por tanto, la serie agregada de pernoctaciones extranjeras, e incorpora la dimensión de los mercados emisores a través de las variables exógenas medidas en cada país de origen, ponderadas por las cuotas de pasajeros aéreos derivadas del conjunto `avia_paoc`.
 
 ### 2.1.4. Panorama metodológico: de la econometría clásica al aprendizaje profundo
 
@@ -195,19 +189,18 @@ El trabajo desarrolla y consolida las competencias específicas del Grado en Cie
 
 **ED1. Capacidad para conocer los fundamentos, paradigmas y técnicas propias de los sistemas inteligentes y analizar, diseñar y construir sistemas, servicios y aplicaciones informáticas que utilicen dichas técnicas en cualquier ámbito de aplicación.** Esta competencia se manifiesta en el conocimiento y la aplicación práctica de cuatro paradigmas distintos de sistemas inteligentes —econometría clásica, aprendizaje automático basado en árboles, aprendizaje profundo recurrente y estadística bayesiana— sobre un mismo problema aplicado al ámbito del turismo y la conectividad aérea. El diseño del *pipeline* completo, desde la integración de datos hasta el módulo prospectivo del Capítulo 5, ejemplifica el alcance integral de esta competencia.
 
-**ED3. Capacidad para conocer y desarrollar técnicas de aprendizaje computacional y diseñar e implementar aplicaciones y sistemas que las utilicen, incluyendo las dedicadas a extracción automática de información y conocimiento a partir de grandes volúmenes de datos.** Esta competencia se cubre con la implementación práctica de seis familias de modelos de aprendizaje computacional documentadas en los cuadernos NB05 a NB09, incluyendo el ajuste de hiperparámetros, la validación temporal con backtest expansivo y la comparativa empírica con tests formales de significación. La extracción de conocimiento se manifiesta tanto en la identificación de relaciones macroeconómicas relevantes como en el descubrimiento empírico del valor de la formulación interanual en redes recurrentes.
+**ED3. Capacidad para conocer y desarrollar técnicas de aprendizaje computacional y diseñar e implementar aplicaciones y sistemas que las utilicen, incluyendo las dedicadas a extracción automática de información y conocimiento a partir de grandes volúmenes de datos.** Esta competencia se cubre con la implementación práctica de seis familias de modelos de aprendizaje computacional, incluyendo el ajuste de hiperparámetros, la validación temporal con backtest expansivo y la comparativa empírica con tests formales de significación. La extracción de conocimiento se manifiesta tanto en la identificación de relaciones macroeconómicas relevantes como en el descubrimiento empírico del valor de la formulación interanual en redes recurrentes.
 
 **ED4. Capacidad de identificar y analizar problemas y diseñar, desarrollar, implementar, verificar y documentar soluciones software en ámbitos de aplicación de la Inteligencia Artificial en Ciencia e Ingeniería de Datos.** Esta competencia se evidencia en el ciclo completo del trabajo: identificación temprana del problema de endogeneidad de la capacidad aérea, diseño del esquema de cuatro especificaciones de complejidad decreciente como respuesta empírica al problema, implementación reproducible en cuadernos Jupyter, verificación mediante tests estadísticos formales y documentación detallada tanto en código como en la presente memoria.
 
 **ED6. Capacidad para tener un conocimiento profundo de los principios fundamentales y modelos utilizados en Ciencia de Datos, particularmente las relacionadas con el análisis, predicción y prospectiva de grandes volúmenes de datos.** Esta es la competencia más directamente alineada con la naturaleza del trabajo, que combina análisis exploratorio multivariante, predicción mediante una batería de modelos y prospectiva condicionada por escenarios externos del FMI, todo ello sobre un panel integrado de datos macroeconómicos y turísticos.
 
-# !!!ANOTACIÓN 3: solo texto, sin mencionar nb aquí
 
-**ED9 (Principal). Capacidad para definir en la empresa problemas del dominio de Ciencia e Ingeniería de Datos y trasladar los análisis estadísticos a actuaciones de Inteligencia de Negocios conducidas por los datos para mejorar el rendimiento.** Esta competencia se materializa de forma especialmente nítida en los módulos aplicados del trabajo: el pipeline prospectivo del cuaderno NB08, que traduce proyecciones macroeconómicas del FMI en pronósticos de demanda turística accionables, y el modelo del cuaderno NB09, diseñado en diálogo con un economista con experiencia en el sector aéreo y entregado en forma de fórmula cerrada interpretable, directamente utilizable para la planificación de capacidad en aerolíneas. Ambos módulos ejemplifican la traslación de análisis estadísticos a Inteligencia de Negocios efectiva.
+**ED9 (Principal). Capacidad para definir en la empresa problemas del dominio de Ciencia e Ingeniería de Datos y trasladar los análisis estadísticos a actuaciones de Inteligencia de Negocios conducidas por los datos para mejorar el rendimiento.** Esta competencia se materializa de forma especialmente nítida en los módulos aplicados del trabajo mediante pipelines prospectivos, que traducen proyecciones macroeconómicas del FMI en pronósticos de demanda turística accionables. Además, se usa un modelo diseñado en diálogo con un economista con experiencia en el sector aéreo y entregado en forma de fórmula cerrada interpretable, directamente utilizable para la planificación de capacidad en aerolíneas. Ambos módulos ejemplifican la traslación de análisis estadísticos a Inteligencia de Negocios efectiva.
 
 ## 3.3. Alineamiento con los Objetivos de Desarrollo Sostenible
 
-La Tabla 3.1 resume el grado de relación del trabajo con cada uno de los diecisiete Objetivos de Desarrollo Sostenible de Naciones Unidas, conforme al criterio de la plantilla de la Escuela.
+La Tabla 3.1 y la Ilustración asociada resumen el grado de relación del trabajo con cada uno de los diecisiete Objetivos de Desarrollo Sostenible de Naciones Unidas, conforme al criterio de la plantilla de la Escuela.
 
 **Tabla 3.1. Grado de relación del trabajo con los Objetivos de Desarrollo Sostenible.**
 
@@ -232,14 +225,17 @@ La Tabla 3.1 resume el grado de relación del trabajo con cada uno de los diecis
 | **17. Alianzas para lograr objetivos** | **1 (Bajo)** | Uso exclusivo de datos abiertos y fuentes públicas auditables (Eurostat, ONS, FMI), publicación del código en repositorio público y compromiso con la ciencia abierta y la reproducibilidad. |
 
 ![ILUSTRACIÓN 3.1 AQUÍ — Radar de alineamiento con los ODS](../figures/report/fig_3_1_ods_radar.png)
-# !!CAMBIO: Diagrama correcto? Apropiado? Necesario?
+> Ilustración 3.1. Alineamiento del trabajo con los Objetivos de Desarrollo Sostenible.
+
 
 ---
 
 # Capítulo 4. Desarrollo
 
-Este capítulo describe la metodología seguida y las fases iniciales del desarrollo del trabajo. Conforme a la estructura acordada con el tutor, este capítulo cubre las fases que van desde la comprensión del problema y los datos hasta la preparación del panel de variables, es decir, los cuadernos Jupyter NB00 a NB04. La construcción y la evaluación de los modelos predictivos —cuadernos NB05 a NB09— se desarrollan en el Capítulo 5, dado que sus resultados son indisociables de la presentación misma de cada modelo. No obstante, este capítulo introduce el marco metodológico común y describe brevemente las técnicas que se aplicarán posteriormente, de modo que el Capítulo 5 pueda concentrarse en los resultados sin necesidad de presentar las técnicas de cero.
 El código fuente completo del trabajo, organizado en diez cuadernos Jupyter ejecutables y reproducibles (NB00 a NB09), está disponible públicamente en el repositorio de GitHub https://github.com/DieGodMF4/Macro-Aviation-Tourism-Modeling, junto con los conjuntos de datos brutos y procesados, los scripts de generación de figuras y la presente memoria. Las menciones a los cuadernos a lo largo de este capítulo y del Capítulo 5 utilizan la nomenclatura abreviada NB00 a NB09 conforme a la convención del repositorio; cada cuaderno tiene un nombre descriptivo dentro de la carpeta docs/ que facilita su identificación.
+
+Este capítulo describe la metodología seguida y las fases iniciales del desarrollo del trabajo. Conforme a la estructura acordada con el tutor, este capítulo cubre las fases que van desde la comprensión del problema y los datos hasta la preparación del panel de variables, es decir, los cuadernos Jupyter NB00 a NB04. La construcción y la evaluación de los modelos predictivos —cuadernos NB05 a NB09— se desarrollan en el Capítulo 5, dado que sus resultados son indisociables de la presentación misma de cada modelo. No obstante, este capítulo introduce el marco metodológico común y describe brevemente las técnicas que se aplicarán posteriormente, de modo que el Capítulo 5 pueda concentrarse en los resultados sin necesidad de presentar las técnicas de cero.
+
 
 ## 4.1. Metodología
 
@@ -272,7 +268,6 @@ Antes de describir las fases concretas de preparación de datos, conviene presen
 
 **LSTM (Long Short-Term Memory).** Red neuronal recurrente diseñada por Hochreiter y Schmidhuber (1997) para capturar dependencias temporales de largo plazo mediante puertas de memoria que controlan el flujo de información a través del tiempo, superando los problemas de gradiente que afectan a las arquitecturas recurrentes clásicas. Su aplicación a la predicción de demanda turística ha sido validada por Salamanis et al. (2022), que documentan mejoras significativas frente a los modelos clásicos en horizontes largos. En este trabajo se exploran dos variantes arquitecturales: LSTM-1step (predicción a un paso, aplicable recursivamente para horizontes mayores) y LSTM-direct12 (predicción directa del vector completo de doce meses en un único paso).
 
-# !!!ANOTACIÓN LSTM fuente nueva (añadida) + Naive explicado
 
 **CausalImpact y BSTS.** Marco bayesiano desarrollado por Brodersen et al. (2015) para inferencia causal contrafactual en series temporales. A partir de un modelo *Bayesian Structural Time Series* entrenado sobre el período pre-intervención, construye una serie contrafactual que estima cuál habría sido la evolución del objetivo en ausencia del shock. La diferencia entre serie observada y contrafactual, integrada en el tiempo y dotada de un intervalo de credibilidad, constituye la estimación del impacto causal.
 
@@ -294,19 +289,22 @@ El período de estudio abarca desde enero de 2011 hasta noviembre de 2025, con u
 
 **Variables exógenas y fuentes.** Los regresores se agrupan en cuatro bloques. (i) Precios: Índice Armonizado de Precios al Consumo mensual (`prc_hicp_midx`, base 2015=100) para Polonia y los nueve emisores, y tipos de cambio bilaterales frente al euro (`ert_bil_eur_m`) para las monedas no-euro. (ii) Renta y demografía: PIB real trimestral (`namq_10_gdp`) y población anual (`demo_pjan`), de los que se deriva el PIB per cápita. (iii) Sentimiento económico: Indicador de Confianza del Consumidor mensual (`ei_bsco_m`) para Alemania, mercado emisor con mayor peso y serie más extensa. (iv) Conectividad aérea: asientos disponibles mensuales en aeropuertos polacos (`avia_tf_aca`).
 
-**Integración del Reino Unido mediante chain-linking.** Tras la retirada del Reino Unido del Sistema Estadístico Europeo, sus series en Eurostat se interrumpen o presentan rupturas metodológicas difícilmente comparables con las del resto de mercados. Dado que el Reino Unido representa la tercera cuota mayor del tráfico aéreo hacia Polonia, excluirlo o extrapolarlo sería gravemente problemático. La solución adoptada es el encadenamiento estadístico con series oficiales del ONS: para cada serie afectada —HICP (serie ONS `D7BT`), PIB real (`ABMI`) y población (`UKPOP`)— se identifica un período de solapamiento con la serie de Eurostat, se calcula un factor de ajuste que iguala los niveles en el punto de empalme y se construye una serie compuesta que utiliza Eurostat antes del empalme y ONS (reescalado) después. Este procedimiento, estándar en econometría aplicada, preserva las tasas de crecimiento efectivas del ONS y mantiene la armonización del nivel con el resto del panel.
+**Integración del Reino Unido mediante chain-linking.** Tras la retirada del Reino Unido del Sistema Estadístico Europeo, sus series en Eurostat se interrumpen o presentan rupturas metodológicas difícilmente comparables con las del resto de mercados. Dado que el Reino Unido representa la tercera cuota mayor del tráfico aéreo hacia Polonia, excluirlo o extrapolarlo sería gravemente problemático. La solución adoptada es el encadenamiento estadístico con series oficiales del ONS: para cada serie afectada —HICP (serie ONS `D7BT`), PIB real (`ABMI`) y población (`UKPOP`)— se identifica un período de solapamiento con la serie de Eurostat, se calcula un factor de ajuste que iguala los niveles en el punto de empalme y se construye una serie compuesta que utiliza Eurostat antes del empalme y ONS (reescalado) después. Este procedimiento, estándar en econometría aplicada, preserva las tasas de crecimiento efectivas del ONS y mantiene la armonización del nivel con el resto del panel. La Ilustración 4.3 muestra el resultado del encadenamiento estadístico aplicado al HICP y al PIB del Reino Unido: los segmentos de Eurostat y de ONS se unen con continuidad en el punto de empalme, evidenciando que el factor de reescalado ha sido correctamente estimado.
 
 ![ILUSTRACIÓN 4.3 AQUÍ — Chain-linking del HICP del Reino Unido](../documentation_es/figures-memoria/fig_4_3_chain_linking_uk.png)
 
 ## 4.3. Análisis exploratorio univariante (NB01)
 
-El cuaderno NB01 caracteriza la variable objetivo mediante visualización temporal, descomposición estacional y análisis de la distribución. Las características estructurales más relevantes son una **estacionalidad muy marcada**, con un ratio entre el pico de agosto (alrededor de 1,87 millones en el período pre-pandemia) y el valle de enero (en torno a 783.000) cercano a 2,4; un **impacto severo del COVID-19**, con un colapso interanual del 96,3 % en abril de 2020 y un período de recuperación de aproximadamente 28 meses; y una **proporción de turistas extranjeros sobre el total** del orden del 18,8 % en promedio, lo que sitúa a Polonia como un destino predominantemente doméstico aunque con un segmento internacional creciendo a ritmo superior y constituyendo el foco del presente trabajo.
+El cuaderno NB01 caracteriza la variable objetivo mediante visualización temporal, descomposición estacional y análisis de la distribución. Las características estructurales más relevantes son una **estacionalidad muy marcada**, con un ratio entre el pico de agosto (alrededor de 1,87 millones en el período pre-pandemia) y el valle de enero (en torno a 783.000) cercano a 2,4; un **impacto severo del COVID-19**, con un colapso interanual del 96,3 % en abril de 2020 y un período de recuperación de aproximadamente 28 meses; y una **proporción de turistas extranjeros sobre el total** del orden del 18,8 % en promedio, lo que sitúa a Polonia como un destino predominantemente doméstico aunque con un segmento internacional creciendo a ritmo superior y constituyendo el foco del presente trabajo. Estas características quedan representadas en la Ilustración 4.4: el Panel A muestra la serie mensual con su tendencia suavizada y el shock COVID sombreado, el Panel B representa las tasas de crecimiento interanual con el colapso de 2020–2021 claramente visible, y el Panel C presenta el mapa de calor año × mes que destaca la concentración estival y el "parche oscuro" pandémico.
 
 ![ILUSTRACIÓN 4.4 AQUÍ — Caracterización de la variable objetivo](../documentation_es/figures-memoria/fig_4_4_target_characterization.png)
 
 ## 4.4. Análisis exploratorio multivariante y diagnóstico estadístico (NB02–NB03)
 
-El cuaderno NB02 examina las relaciones entre la variable objetivo y los regresores candidatos mediante matrices de correlación y funciones de correlación cruzada (CCF) a retardos de 0 a 12 meses, contrastando los resultados obtenidos en niveles absolutos frente a los obtenidos en variaciones interanuales (YoY). El contraste entre ambas representaciones resulta extraordinariamente revelador y orienta el resto de decisiones metodológicas del trabajo.
+El cuaderno NB02 examina las relaciones entre la variable objetivo y los regresores candidatos mediante matrices de correlación y funciones de correlación cruzada (CCF) a retardos de 0 a 12 meses, contrastando los resultados obtenidos en niveles absolutos frente a los obtenidos en variaciones interanuales (YoY). El contraste entre ambas representaciones resulta extraordinariamente revelador y orienta el resto de decisiones metodológicas del trabajo. La Ilustración 4.5 presenta ambos heatmaps lado a lado para facilitar la comparación entre las correlaciones contaminadas por tendencia (Panel A) y las correlaciones limpias en variaciones interanuales (Panel B).
+
+![ILUSTRACIÓN 4.5 AQUÍ — Heatmap de cross-correlaciones en niveles y variaciones](../documentation_es/figures-memoria/fig_4_5_ccf_heatmaps.png)
+
 
 **Correlaciones en niveles.** La capacidad aérea contemporánea (`seats`) presenta la correlación más alta con el objetivo (r = 0,88 a lag 0), seguida del PIB de los emisores ponderado (r = 0,48 a lag 0) y del PIB alemán (r = 0,37 a lag 0). El resto de regresores macroeconómicos —ratio HICP, tipo de cambio, precio turístico relativo, confianza del consumidor— presentan correlaciones bajas o muy bajas en valor absoluto (todas por debajo de 0,40). Estos valores de niveles **están contaminados por la tendencia secular compartida**: todas las series macroeconómicas tienen una tendencia creciente sostenida desde 2011 que produce correlaciones espurias con la demanda turística, también creciente. Por ello, la inferencia sustantiva debe basarse en el análisis en variaciones interanuales.
 
@@ -319,9 +317,8 @@ El cuaderno NB02 examina las relaciones entre la variable objetivo y los regreso
 
 El cuaderno NB03 formaliza este análisis exploratorio con tests estadísticos de propiedades de las series. Los tests ADF y KPSS confirman que la serie objetivo es no estacionaria en niveles y se vuelve estacionaria al tomar diferencias estacionales. Los tests de causalidad de Granger detectan relación de precedencia temporal entre la mayoría de los regresores macroeconómicos y la variable objetivo, conforme a la dirección teórica esperada. El hallazgo más relevante de este cuaderno, sin embargo, es la **detección de causalidad de Granger en ambos sentidos entre capacidad aérea y demanda turística**, confirmando de manera argumentada la sospecha de endogeneidad bidireccional ya señalada en el Capítulo 2 y motivando el esquema de cuatro especificaciones del NB06.
 
-# !!CAMBIO nuevos párrafos de argumentación para este apartado.
 
-![ILUSTRACIÓN 4.5 AQUÍ — Heatmap de cross-correlaciones en niveles y variaciones](../documentation_es/figures-memoria/fig_4_5_ccf_heatmaps.png)
+
 
 
 ## 4.5. Ingeniería de variables y diagnóstico de colinealidad (NB04)
@@ -335,9 +332,6 @@ El cuaderno NB04 culmina la fase de preparación de datos con la construcción d
 **Variables con retardo.** En el análisis de series temporales, una variable con retardo `lag_k` representa el valor de esa variable observado `k` meses antes del momento de referencia: así, `nights_lag12` denota las pernoctaciones ocurridas doce meses antes del mes actual, y `cci_DE_lag2` denota el Indicador de Confianza del Consumidor alemán observado dos meses antes. La incorporación de variables con retardo en un modelo predictivo cumple tres funciones complementarias. En primer lugar, captura la **inercia temporal** de la serie: la demanda turística de un mes determinado está fuertemente correlacionada con la del mismo mes del año anterior por motivos estacionales evidentes, y esta correlación es información explotable que se materializa en el retardo de doce meses. En segundo lugar, permite incorporar variables explicativas que actúan con **desfase temporal**, como los indicadores adelantados de confianza del consumidor —que típicamente anticipan las decisiones de gasto con uno o dos meses de antelación—. En tercer lugar, y particularmente relevante para el presente trabajo, los retardos permiten reflejar **restricciones operativas reales**: las aerolíneas planifican capacidad con varios meses de antelación según las directrices IATA sobre asignación de slots aeroportuarios, lo que justifica el uso de la capacidad aérea observada seis meses antes (seats_lag6) como predictor de la demanda contemporánea sin incurrir en el problema de endogeneidad bidireccional documentado en el Capítulo 2.
 Con estas tres justificaciones, las variables con retardo construidas en este cuaderno son `nights_lag1` y `nights_lag12` (retardos autorregresivos de uno y doce meses de la propia variable objetivo), `gdp_origins_lag3` (alineado con el pico de correlación cruzada del PIB de los mercados emisores observado en el NB02), `cci_DE_lag2` (alineado con la dinámica adelantada de la confianza del consumidor alemán) y `seats_lag6` (predeterminado por el horizonte estándar de asignación de slots IATA). La elección de cada retardo específico está documentada empíricamente: se identifica el retardo de cada variable como aquel que maximiza la correlación cruzada con la variable objetivo dentro del rango temporalmente razonable, evitando así la introducción arbitraria de variables retardadas sin justificación.
 
-# !!!ANOTACIÓN lags en variables explicado
-
-# !!CAMBIO Nuevos párrafos para la colinealidad:
 
 **Diagnóstico de colinealidad.** Se calcula el Factor de Inflación de la Varianza (VIF) sobre primeras diferencias, que es la métrica relevante cuando las series comparten tendencia secular y la versión en niveles produciría valores artificialmente inflados. El diagnóstico identifica dos grupos de variables con problemas de colinealidad:
 
@@ -400,13 +394,17 @@ Los resultados se resumen en la Tabla 5.1.
 | SARIMAX(1,1,1)(1,1,1)₁₂ | 138.428 | 118.505 | 6,6 % |
 | Naive Seasonal | 167.404 | 149.398 | 9,1 % |
 
+La Ilustración 5.1 visualiza estas predicciones sobre el hold-out, donde se observa que los cuatro baselines capturan correctamente la forma estacional pero difieren en su capacidad de seguir la dinámica del último año.
+
+![ILUSTRACIÓN 5.1 AQUÍ — Predicciones de los baselines en el hold-out](../documentation_es/figures-memoria/fig_5_1_baselines_holdout.png)
+
 Dos hallazgos merecen comentario detallado.
 
 **El "éxito" aparente de Holt-Winters es una solución numéricamente degenerada.** Su MAPE del 3,9 % supera ampliamente al de los demás modelos, pero la inspección de los parámetros optimizados revela una configuración degenerada: $\alpha = 1$ (el modelo prácticamente ignora la media móvil del nivel y usa el último valor observado), $\beta = 0$ (sin componente de tendencia) y $\gamma = 0$ (sin componente estacional). Esta configuración equivale a un modelo altamente reactivo al último dato disponible, que produce predicciones precisas en períodos estables pero colapsa completamente ante cambios estructurales. No constituye un resultado robusto y se reporta con esa advertencia explícita.
 
 **El SARIMAX pierde marginalmente contra el SARIMA univariante.** Este hallazgo es contraintuitivo pero empíricamente robusto: incorporar las variables exógenas al SARIMA no mejora su precisión, sino que la empeora ligeramente (MAPE 6,6 % frente a 6,0 %). La interpretación, consistente con Gunter y Smeral (2016) y validada por el tutor, es que en modelos lineales los retardos autorregresivos ya absorben la variación sistemática que las exógenas podrían explicar. Añadirlas en una estructura lineal saturada introduce ruido de estimación sin ganancia informacional. Este hallazgo motiva conceptualmente el salto a modelos no lineales en los cuadernos siguientes.
 
-![ILUSTRACIÓN 5.1 AQUÍ — Predicciones de los baselines en el hold-out](../documentation_es/figures-memoria/fig_5_1_baselines_holdout.png)
+
 
 ## 5.2. Modelos de aprendizaje automático con cuatro especificaciones (NB06)
 
@@ -419,9 +417,9 @@ El cuaderno NB06 implementa Random Forest y XGBoost en cuatro especificaciones c
 - **M3-NoLag1:** M2 menos `nights_lag1`. Mantiene `nights_lag12` (memoria estacional) y `seats_lag6` (predeterminado por el horizonte IATA). Esta es la **especificación operativa honesta**: solo utiliza información disponible al momento de la decisión.
 - **M4-MacroOnly:** M3 menos los retardos seriales. Sólo features macroeconómicas y de control. Test de estrés extremo.
 
-Los resultados del backtest con ventana expansiva sobre el período excluyendo COVID, a horizonte de 12 meses, se presentan en la Tabla 5.2.
+Los resultados del backtest con ventana expansiva sobre el período excluyendo COVID, a horizonte de 12 meses, se presentan en la Tabla 5.2. Las columnas h=1, h=3, h=6, h=12 indican el número de meses de antelación con que se realiza la predicción.
 
-**Tabla 5.2. MAPE en backtest expansivo ex-COVID por especificación y horizonte de predicción**. Las columnas h=1, h=3, h=6, h=12 indican el número de meses de antelación con que se realiza la predicción: por ejemplo, h=6 es la predicción de la demanda con seis meses de antelación al mes objetivo. Valores menores indican mejor precisión.
+**Tabla 5.2. MAPE en backtest expansivo ex-COVID por especificación y horizonte de predicción**
 
 | Modelo y especificación | 1 mes | 3 meses | 6 meses | 12 meses |
 |:---|---:|---:|---:|---:|
@@ -434,7 +432,7 @@ Los resultados del backtest con ventana expansiva sobre el período excluyendo C
 | XGB M3-NoLag1 | 7,1 % | 10,3 % | 12,6 % | 14,3 % |
 | XGB M4-MacroOnly | 11,2 % | 17,5 % | 19,6 % | 16,9 % |
 
-# !!!ANOTACIÓN Aclaración significado de "h".
+La Ilustración 5.2 representa visualmente los MAPE de la Tabla 5.2 frente al horizonte de predicción, separando Random Forest (panel izquierdo) y XGBoost (panel derecho).
 
 **Lectura de los hallazgos.** La progresión M1 → M2 → M3 → M4 cuantifica el coste empírico de cada restricción metodológica.
 
@@ -450,7 +448,6 @@ El paso de M3 a M4 elimina los retardos seriales remanentes (`nights_lag12` y `s
 
 ![ILUSTRACIÓN 5.3 AQUÍ — Heatmap de importancia de variables a través de las cuatro especificaciones](../figures/models/06_04_feature_importance_heatmap.png)
 
-# !!CAMBIO Nuevos plots añadidos, checkear tamaño (son necesarios)?
 
 ## 5.3. Aprendizaje profundo con transformación interanual (NB07)
 
@@ -489,7 +486,7 @@ La asimetría entre arquitecturas es interpretable. La variante direct12 produce
 
 ### 5.3.4. Backtest con ventana expansiva
 
-El backtest expansivo sobre dieciséis orígenes distribuidos en los bloques pre y post-COVID confirma la robustez del hallazgo. En el bloque post-COVID a horizonte de doce meses, que es el horizonte y régimen relevantes para el despliegue, LSTM-direct12 V2 alcanza un MAPE del 3,33 %, frente a 6,93 % de XGB-noCOVID, prácticamente la mitad. La precisión del LSTM en este horizonte largo es además **estable**: oscila entre el 3,33 % y el 7,28 % a través de los cuatro horizontes evaluados (1, 3, 6 y 12 meses), sin degradación catastrófica.
+El backtest expansivo sobre dieciséis orígenes distribuidos en los bloques pre y post-COVID confirma la robustez del hallazgo. En el bloque post-COVID a horizonte de doce meses, que es el horizonte y régimen relevantes para el despliegue, LSTM-direct12 V2 alcanza un MAPE del 3,33 %, frente a 6,93 % de XGB-noCOVID, prácticamente la mitad. La precisión del LSTM en este horizonte largo es además **estable**: oscila entre el 3,33 % y el 7,28 % a través de los cuatro horizontes evaluados (1, 3, 6 y 12 meses), sin degradación catastrófica, como se puede apreciar en la Ilustración 5.4.
 
 ![ILUSTRACIÓN 5.4 AQUÍ — MAPE por horizonte en el backtest, separado por bloques pre y post-COVID](../figures/models/07_02_rolling_mape_by_horizon.png)
 
@@ -535,7 +532,7 @@ Este resultado no es un fallo del modelo sino una propiedad esperable del diseñ
 
 ### 5.4.3. Benchmark de elasticidad como instrumento de sensibilidad
 
-Para introducir sensibilidad genuina a los escenarios, el cuaderno aplica un benchmark independiente basado en la elasticidad-renta turística media de Peng et al. (2015), igual a 2,0. A diferencia del LSTM, este benchmark responde proporcionalmente a los cambios de PIB por construcción matemática. Aplicado a las trayectorias del FMI con shifts de ±2pp, produce un envelope de aproximadamente ±4 % alrededor del escenario Tendencial: el Optimista añade en torno a 800.000 pernoctaciones anuales y el Pesimista resta una cantidad similar. La amplitud del envelope Optimista–Pesimista representa aproximadamente el 8 % del total anual.
+Para introducir sensibilidad genuina a los escenarios, el cuaderno aplica un benchmark independiente basado en la elasticidad-renta turística media de Peng et al. (2015), igual a 2,0. A diferencia del LSTM, este benchmark responde proporcionalmente a los cambios de PIB por construcción matemática. Aplicado a las trayectorias del FMI con shifts de ±2pp, produce un envelope de aproximadamente ±4 % alrededor del escenario Tendencial: el Optimista añade en torno a 800.000 pernoctaciones anuales y el Pesimista resta una cantidad similar. La amplitud del envelope Optimista–Pesimista representa aproximadamente el 8 % del total anual. La Ilustración 5.6 sintetiza el ejercicio prospectivo combinado: la línea histórica observada, la predicción central del LSTM y las tres trayectorias del benchmark de elasticidad bajo los escenarios Tendencial, Optimista y Pesimista.
 
 **Los dos métodos son complementarios, no sustitutivos.** El LSTM proporciona la **mejor estimación central**, calibrada empíricamente sobre el panel completo de Polonia y con una precisión histórica del orden del 3-5 %. El benchmark de elasticidad proporciona la **mejor estimación de sensibilidad estructural**, calibrada con una elasticidad media de la literatura mundial. La forma operativa de utilizarlos conjuntamente es: la predicción central del LSTM como punto puntual esperado, y el envelope del benchmark como banda de incertidumbre estructural ante variaciones del escenario macroeconómico. En niveles absolutos los dos métodos convergen dentro del 7-15 %, lo que constituye el principal sanity check de todo el análisis prospectivo.
 
@@ -581,7 +578,7 @@ $$
 \text{seats}(t) = \text{seats}(t-12) \cdot \exp\!\left(0{,}0742 + 1{,}5654 \cdot \Delta\log\text{GDP}_\text{orig}(t-12)\right)
 $$
 
-donde $\Delta\log\text{GDP}_\text{orig}(t-12)$ representa la log-diferencia interanual del PIB ponderado de los mercados emisores doce meses antes. **La predicción no es una explicación causal** y debe usarse como instrumento de simulación de escenarios, no como afirmación sobre los determinantes estructurales de la capacidad aérea.
+donde $\Delta\log\text{GDP}_\text{orig}(t-12)$ representa la log-diferencia interanual del PIB ponderado de los mercados emisores doce meses antes. **La predicción no es una explicación causal** y debe usarse como instrumento de simulación de escenarios, no como afirmación sobre los determinantes estructurales de la capacidad aérea. La siguiente Ilustración 5.8 muestra el ajuste de los tres enfoques sobre el hold-out: las tres curvas son prácticamente indistinguibles entre sí, evidencia gráfica de la marginalidad de las diferencias de precisión discutida en la Sección 5.5.2.
 
 ![ILUSTRACIÓN 5.8 AQUÍ — Modelo de capacidad: predicción, observado y benchmark](../figures/models/09_06_seats_model_comparison_holdout.png)
 
@@ -606,9 +603,8 @@ La Tabla 5.4 resume los principales modelos del trabajo con sus respectivos MAPE
 | Naive Seasonal | Capacidad aérea | NB09 | 1,82 % |
 | Modelo A (OLS log-log) | Capacidad aérea | NB09 | 2,01 % |
 
-**Pie de fila de la fila LSTM-direct12 V2*: Modelo ganador en MAPE pero con sensibilidad estructural a inputs macroeconómicos despreciable; véase Sección 5.3.7.
+**Modelo ganador en MAPE pero con sensibilidad estructural a inputs macroeconómicos despreciable; véase Sección 5.3.7.*
 
-# !!!ANOTACIÓN leve: añadido pie de fila en relación a lo otro visto
 
 Holt-Winters se excluye del ranking por ser una solución degenerada (Sección 5.1). Los MAPE de los modelos de capacidad aérea (NB09) son notablemente más bajos que los de los modelos de pernoctaciones porque la serie de capacidad es estructuralmente más suave y predecible —la capacidad se programa con antelación y cambia menos abruptamente que la demanda turística observada— por lo que no son directamente comparables con los de las demás filas.
 
@@ -630,13 +626,11 @@ Si el trabajo dejase a la comunidad un único hallazgo metodológico, éste ser�
 
 La revisión bibliográfica realizada en el marco del trabajo identifica varias aproximaciones documentadas para tratar shocks estructurales en series temporales estacionales: la detección formal de breakpoints (Bai y Perron, 2003; Hall, 2025), los modelos de cambio de régimen tipo Markov-switching (Lardic y Mignon, 2003), la descomposición flexible de tendencia con métodos bayesianos estructurales (Doornik et al., 2021) y el tratamiento del shock como sucesión de outliers en procedimientos de ajuste estacional automatizado. En el ámbito específico del tourism forecasting post-COVID, los estudios consultados (Polyzos et al., 2021; Hsieh, 2021; Salamanis et al., 2022) responden al cambio estructural mayoritariamente mediante modelos híbridos CNN-LSTM o incorporando datos alternativos como Google Trends, manteniendo la formulación del objetivo en niveles absolutos. La transformación del objetivo del modelo recurrente a tasa de variación interanual, tal y como se ha implementado en el presente trabajo, no se ha encontrado documentada de forma sistemática en la literatura específica del tourism forecasting consultada, aunque comparte fundamentación conceptual con prácticas operativas del ámbito de la logística y la planificación de retail (Opex Analytics, 2020). La magnitud de la mejora obtenida sobre la formulación en niveles es lo bastante grande como para que no pueda atribuirse a azar ni a optimización de hiperparámetros: viene del cambio de representación del objetivo, no del modelo. Esta lección es generalizable a otras series temporales con cambios de nivel estructurales —shocks pandémicos, crisis financieras, reformas regulatorias— y constituye una recomendación de diseño con potencial de impacto más allá del caso polaco.
 
-# !!!ANOTACIÓN: Se añade bibliografía y se detalla el porqué
 
 ### 6.1.3. La distinción entre predicción y explicación
 
 Una segunda lección, formulada de manera particularmente clara en el cuaderno NB09 y resumida en una frase que mereció destacarse durante la fase de validación con el tutor académico, es que **la mejor predicción no es necesariamente la mejor explicación**. Un modelo que predice excepcionalmente bien no proporciona, por ese solo hecho, una comprensión causal de los mecanismos subyacentes. El modelo de capacidad aérea del NB09 ilustra este principio con claridad: su capacidad predictiva es alta porque la inercia del propio ciclo de planificación captura la mayor parte de la varianza; el coeficiente del PIB, que es la pieza interpretable de la fórmula, presenta significación marginal y un R² bajo. El modelo es valioso como instrumento de simulación de escenarios, pero no debe presentarse como una explicación causal del comportamiento de las aerolíneas. Esta distinción, aparentemente sutil, resulta crucial para la honestidad académica del trabajo y para su uso responsable en contextos aplicados. Como subrayó el tutor académico durante la fase de validación de los resultados, "la mejor predicción no es necesariamente la mejor explicación; una buena predicción no implica causalidad".
 
-# !!!ANOTACIÓN leve: "mejor predicción no es necesariamente la mejor explicación"
 
 ### 6.1.4. La distinción entre objetivo académico y objetivo operativo
 
